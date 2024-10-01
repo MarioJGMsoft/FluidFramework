@@ -2,7 +2,12 @@
  * Copyright (c) Microsoft Corporation and contributors. All rights reserved.
  * Licensed under the MIT License.
  */
-import { LoggingError } from "@FluidFramework/packages/utils/telemetry-utils/src/errorLogging.tss";
+import type {
+	ILoggingError,
+	ITelemetryBaseProperties,
+} from "@fluidframework/core-interfaces/internal";
+import { v4 as uuid } from "uuid";
+
 /**
  * Base class for "trusted" errors we create, whose properties can generally be logged to telemetry safely.
  * All properties set on the object, or passed in (via the constructor or addTelemetryProperties),
@@ -12,10 +17,7 @@ import { LoggingError } from "@FluidFramework/packages/utils/telemetry-utils/src
  *
  * @internal
  */
-export class LoggingError
-	extends Error
-	implements ILoggingError, Omit<IFluidErrorBase, "errorType">
-{
+export class LoggingError extends Error implements ILoggingError {
 	private _errorInstanceId = uuid();
 	public get errorInstanceId(): string {
 		return this._errorInstanceId;
@@ -41,7 +43,7 @@ export class LoggingError
 		omitPropsFromLogging.add("omitPropsFromLogging");
 		omitPropsFromLogging.add("_errorInstanceId");
 
-		if (props) {
+		if (props !== undefined) {
 			this.addTelemetryProperties(props);
 		}
 	}
@@ -93,6 +95,20 @@ export class LoggingError
 			message: this.message,
 			errorInstanceId: this._errorInstanceId,
 		};
+	}
+}
+
+/**
+ * Copy props from source onto target, but do not overwrite an existing prop that matches
+ */
+function copyProps(
+	target: ITelemetryPropertiesExt | LoggingError,
+	source: ITelemetryPropertiesExt,
+): void {
+	for (const key of Object.keys(source)) {
+		if (target[key] === undefined) {
+			target[key] = source[key];
+		}
 	}
 }
 
