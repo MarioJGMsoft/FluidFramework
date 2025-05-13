@@ -42,7 +42,7 @@ importers:
         version: link:packages/tools/changelog-generator-wrapper
       '@fluid-tools/build-cli':
         specifier: ^0.55.0
-        version: 0.55.0(@types/node@22.10.1)(encoding@0.1.13)(typescript@5.4.5)(webpack-cli@5.1.4)
+        version: 0.55.0(@types/node@18.19.67)(encoding@0.1.13)(typescript@5.4.5)
       '@fluid-tools/markdown-magic':
         specifier: workspace:~
         version: link:tools/markdown-magic
@@ -51,7 +51,7 @@ importers:
         version: 2.0.3
       '@fluidframework/build-tools':
         specifier: ^0.55.0
-        version: 0.55.0(@types/node@22.10.1)
+        version: 0.55.0(@types/node@18.19.67)
       '@fluidframework/eslint-config-fluid':
         specifier: ^5.7.3
         version: 5.7.3(eslint@8.55.0)(typescript@5.4.5)
@@ -60,10 +60,10 @@ importers:
         version: 1.0.195075
       '@microsoft/api-documenter':
         specifier: ^7.21.6
-        version: 7.26.2(@types/node@22.10.1)
+        version: 7.26.2(@types/node@18.19.67)
       '@microsoft/api-extractor':
         specifier: 7.52.5
-        version: 7.52.5(patch_hash=ldzfpsbo3oeejrejk775zxplmi)(@types/node@22.10.1)
+        version: 7.52.5(patch_hash=ldzfpsbo3oeejrejk775zxplmi)(@types/node@18.19.67)
       '@vvago/vale':
         specifier: ^3.11.2
         version: 3.11.2
@@ -90,7 +90,7 @@ importers:
         version: 8.55.0
       jest:
         specifier: ^29.6.2
-        version: 29.7.0(@types/node@22.10.1)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@22.10.1)(typescript@5.4.5))
+        version: 29.7.0(@types/node@18.19.67)(babel-plugin-macros@3.1.0)(ts-node@10.9.2(@types/node@18.19.67)(typescript@5.4.5))
       mocha:
         specifier: ^10.8.2
         version: 10.8.2
@@ -14123,6 +14123,9 @@ importers:
 
   packages/test/test-end-to-end-tests:
     dependencies:
+      '@ff-internal/aria-logger':
+        specifier: ^0.0.22
+        version: 0.0.22(tslib@1.14.1)
       '@fluid-experimental/attributor':
         specifier: workspace:~
         version: link:../../framework/attributor
@@ -14282,7 +14285,7 @@ importers:
         version: 1.9.4
       '@fluid-tools/build-cli':
         specifier: ^0.55.0
-        version: 0.55.0(@types/node@18.19.67)(encoding@0.1.13)(typescript@5.4.5)(webpack-cli@5.1.4)
+        version: 0.55.0(@types/node@18.19.67)(encoding@0.1.13)(typescript@5.4.5)
       '@fluidframework/build-common':
         specifier: ^2.0.3
         version: 2.0.3
@@ -16742,6 +16745,10 @@ packages:
     resolution: {integrity: sha512-qQfo2mxH5yVom1kacMtZZJFVdW+E70mqHMJvVg6WTLo+VBuQJ4TojZlfWBjK0ve5BdEeNAVxOsl/nvNMpJOaJA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
+  '@ff-internal/aria-logger@0.0.22':
+    resolution: {integrity: sha1-O+S2XijoAEyf8RgN5pKSGg2rM30=}
+    engines: {node: '>=18.17.1', pnpm: '8'}
+
   '@floating-ui/core@1.6.8':
     resolution: {integrity: sha512-7XJ9cPU+yI2QeLS+FCSlqNFZJq8arvswefkZrYI1yQBbftw6FyrZOxYSh+9S7z7TpeWlRt9zJ5IhM1WIL334jA==}
 
@@ -17397,11 +17404,17 @@ packages:
   '@fluidframework/cell@2.33.0':
     resolution: {integrity: sha512-tYEUFz9/+y2LArMB4GQZeOQ4n70M7Azde6B9g5mizhtzAwZeqSE4QQAxz19oiUreFNxR7OyQGOOUhJVeHoUjEw==}
 
+  '@fluidframework/common-definitions@0.19.1':
+    resolution: {integrity: sha512-H+wEaxuIHODVNqyY8XSMY6ww7ndrRfht9CXKUAUzdQjUN1Oi++YonKcD3CXWZod6afxZ6abDmltIO9wLrjOJzg==}
+
   '@fluidframework/common-definitions@0.20.1':
     resolution: {integrity: sha512-KaoQ7w2MDH5OeRKVatL5yVOCFg+9wD6bLSLFh1/TV1EZM46l49iBqO7UVjUtPE6BIm0jvvOzJXULGVSpzokX3g==}
 
   '@fluidframework/common-definitions@1.1.0':
     resolution: {integrity: sha512-WQYtG9tkx2j7i1JSXPvwLnQsqCOZAghMj0aGciqjZVNppUly/XBpAjb4V6FEUCEjxCScPKhyE+1rhV1ep52NgA==}
+
+  '@fluidframework/common-utils@0.28.0':
+    resolution: {integrity: sha512-15bJziOHNejiChO8Yug1GT3ev4CI1XW73oNxgx3BG2bQvnqaOcQ3JuceSY1z2DH0Bm6lF8hzWdku+C2Bxl84jg==}
 
   '@fluidframework/common-utils@0.32.2':
     resolution: {integrity: sha512-PoGX7/l0vWKt5JaAxcgFOdGje30Q6qSE06YzFIKh9Ba3oq7B60+TFqu7c2ErQt6sNddmvcAcAiLVNaTGAip3vw==}
@@ -17438,6 +17451,9 @@ packages:
 
   '@fluidframework/container-utils@1.4.0':
     resolution: {integrity: sha512-OKYpvuzz5N62gQn8JELMyuKEwJAlToiLNWJP/dn/PS1HCKux5C/Mg7Twdi19DCgXP/hp5qvzAd+EHPqYWxMUGg==}
+
+  '@fluidframework/core-interfaces@0.36.1':
+    resolution: {integrity: sha512-WYNKAUYgZ1OVGLprI3O6//TPRwcFuX753J8d4TaG5pKktIqJ5d1NHTORKAmAY01V48/ftOFaSqPIREiEkrAJFg==}
 
   '@fluidframework/core-interfaces@1.4.0':
     resolution: {integrity: sha512-PDIglmsa9BgFh7Xhfs32KA3Q34/arTVHF4m3M0IuAByP4z8Oi2lVuNENZnBEk+IJMcrUhUDk5Q9LH8KGfoAw+Q==}
@@ -17477,6 +17493,9 @@ packages:
 
   '@fluidframework/driver-base@2.33.0':
     resolution: {integrity: sha512-/dzy7EhSw26idFqnXksCka3ITLSNlhd9ab+M3ox+qERJFN5vWprXAurFDWnQygTKf5gA7Ur/s3+yKXGpuVN4sg==}
+
+  '@fluidframework/driver-definitions@0.36.1':
+    resolution: {integrity: sha512-xPMq20iOvR0KIiAlPDob18PLwAyXXcXXvNOwNxnRnprpxWfepkKQb5jTzQ0g/u8wajt6gvt3jGn2ksZMN5mshw==}
 
   '@fluidframework/driver-definitions@1.4.0':
     resolution: {integrity: sha512-ay6Wwl8zGS64fjDsdh2iOeKiVVxT57Opeqjp6DqSglnnJi6AkSfYVoOVlMZ5+vJTfYJN3N4ptjrP/i3Mao9zPA==}
@@ -17556,6 +17575,9 @@ packages:
 
   '@fluidframework/protocol-base@5.0.0':
     resolution: {integrity: sha512-q5qQt269nUYQERwX5lntfEXVv7jbxFmGAZC1z1I5hZmkvSC6PJGF6GzXAtP43/eq0+hCftxmIT0jus+kLL/K4w==}
+
+  '@fluidframework/protocol-definitions@0.1021.0':
+    resolution: {integrity: sha512-qJ0/kyxmQOCLjb0gvWHKQdjNUVQdso5N5lWiqv6SZIvVtWTE+3k8Z4gN3d365A1jGdpn5qAnOaV9au3aAtWARQ==}
 
   '@fluidframework/protocol-definitions@0.1028.2000':
     resolution: {integrity: sha512-ZUPCmPFcK7UAK4RkfVWfzQPAWFvYNm6ywP51V42YC38gCGye+Epvyr3beA+FSaHPIZGxm5+Uw52+ykTvmDb2UA==}
@@ -17653,11 +17675,17 @@ packages:
   '@fluidframework/task-manager@2.33.0':
     resolution: {integrity: sha512-XtNfdPgf/aAu4DOP8Yi/IlSePprHcrMZO0ZLSeuEYf/TsgbOFPKgbjAWABJ9b/R5USofhS0lKziVMIYyOJuDOQ==}
 
+  '@fluidframework/telemetry-utils@0.36.1':
+    resolution: {integrity: sha512-OeZgAI8SYuQ0epXTD5W1yGG4keeLcyASwPQSMDhbngsbM/PoQogvKI1kXJIFe2axmO7CM8y5iyDX6a/y2HaWrw==}
+
   '@fluidframework/telemetry-utils@1.4.0':
     resolution: {integrity: sha512-WXG1ThL+WJLGdBtUGlCPPlIrHxqnc+zy+YHrYtqFnlIp+75W3W+YApR5dyP1uCfvapISoBPo0htK3WNIiyj8Rw==}
 
   '@fluidframework/telemetry-utils@2.33.0':
     resolution: {integrity: sha512-4gyHnzCOy/118Qg+aTPBMWbI2i3+W8Jpxm2s4CPTWEEgIeiVPmyDUVNnZWD4eXbWlh5AGnBt2Z0GvZbqnXZ9kQ==}
+
+  '@fluidframework/test-driver-definitions@0.36.1':
+    resolution: {integrity: sha512-T1n4oDM6FRbGr1qjynpFmRRoQbYMcHPep3FpWzXGGOODfkW77zBObvgPhTI4F66g8JZHn1MRneOCjTfxFnL+Sw==}
 
   '@fluidframework/test-runtime-utils@2.33.0':
     resolution: {integrity: sha512-vq4Qltqy5yoKFaKzs0mVTv/U/5nxkgh0SvBCKGrKtnu8i9yXExdzjDR252kuU1rIncdB6iD7ChKDuh4Dvd8O/A==}
@@ -18060,10 +18088,16 @@ packages:
     engines: {node: '>=14.18.0'}
 
   '@microsoft/1ds-core-js@3.2.18':
-    resolution: {integrity: sha512-ytlFv3dfb8OGqvbZP8tSIlNvn3QNYxdsF0k6ikRMWSr6CmBxBi1sliaxc2Q5KuYOuaeWkd8WRm25Rx/UtHcyMg==}
+    resolution: {integrity: sha1-K+DdMd8NkAGmC0XrJjiG+rFFYTs=}
+
+  '@microsoft/1ds-core-js@4.3.6':
+    resolution: {integrity: sha1-ij5kU7+tdRYWVXVuaFV3ADBkTLI=}
 
   '@microsoft/1ds-post-js@3.2.18':
-    resolution: {integrity: sha512-Tzjcja4SMyws3UP58kD2edFPNb7BJtx5uCgwf/PWXwDyfbUY1/crsTQdEyR98wy/vorvLDZdQlcL++VMChfYnQ==}
+    resolution: {integrity: sha1-77tEX0htn5LhD/MFZKbFBgqlOQk=}
+
+  '@microsoft/1ds-post-js@4.3.6':
+    resolution: {integrity: sha1-LqtgfXjzvgbo7sENHdj+LfCYW44=}
 
   '@microsoft/api-documenter@7.26.2':
     resolution: {integrity: sha512-NLKxqMiRN9j7AnCqrNOzRvQMRNQ97Trx9sjLLIh/REgEA2dJrAGRQ390BbVn0+5bnI29F/esvdzca/2cFikTAg==}
@@ -18095,9 +18129,14 @@ packages:
       tslib: '*'
 
   '@microsoft/applicationinsights-core-js@2.8.18':
-    resolution: {integrity: sha512-yPHRZFLpnEO0uSgFPM1BLMRRwjoten9YBbn4pJRbCT4PigLnj748knmWsMwXIdcehtkRTYz78kPYa/LWP7nvmA==}
+    resolution: {integrity: sha1-s86eg09KCazrgkZeJBCFFGH19oo=}
     peerDependencies:
       tslib: '*'
+
+  '@microsoft/applicationinsights-core-js@3.3.6':
+    resolution: {integrity: sha1-H67qk13J6gu4UNdivPzPwBxvvXE=}
+    peerDependencies:
+      tslib: '>= 1.0.0'
 
   '@microsoft/applicationinsights-dependencies-js@2.8.18':
     resolution: {integrity: sha512-XW3m1DEXo2CkTUEeBzXGjoMjud6b1Y1J6W1Nz0RJ3IMC5ptbSOeen5rRDSzcBEUZN75vWvbGmhxVuQTXnnIu2g==}
@@ -18110,7 +18149,10 @@ packages:
       tslib: '*'
 
   '@microsoft/applicationinsights-shims@2.0.2':
-    resolution: {integrity: sha512-PoHEgsnmcqruLNHZ/amACqdJ6YYQpED0KSRe6J7gIJTtpZC1FfFU9b1fmDKDKtFoUSrPzEh1qzO3kmRZP0betg==}
+    resolution: {integrity: sha1-krNqCTdeLZyytCAzg7BXcr6DcIU=}
+
+  '@microsoft/applicationinsights-shims@3.0.1':
+    resolution: {integrity: sha1-OGW3Os6EBbnEYYzFxXHy/jh28G8=}
 
   '@microsoft/applicationinsights-web@2.8.18':
     resolution: {integrity: sha512-n6gW9WXr/oHrt2S8waXjYoBqzhPChJNoTPlKm+pwtO3iP+I8dQDuf8Q02RKLgCaWzvEhO/1GSznCECBX0jP+gg==}
@@ -18118,7 +18160,10 @@ packages:
       tslib: '*'
 
   '@microsoft/dynamicproto-js@1.1.11':
-    resolution: {integrity: sha512-gNw9z9LbqLV+WadZ6/MMrWwO3e0LuoUH1wve/1iPsBNbgqeVCiB0EZFNNj2lysxS2gkqoF9hmyVaG3MoM1BkxA==}
+    resolution: {integrity: sha1-xzfhpQ25RTNUcp3a6yw7FpJ+2S4=}
+
+  '@microsoft/dynamicproto-js@2.0.3':
+    resolution: {integrity: sha1-ritAgGHj/wGpcHhCn8doMx4jklY=}
 
   '@microsoft/load-themed-styles@1.10.295':
     resolution: {integrity: sha512-W+IzEBw8a6LOOfRJM02dTT7BDZijxm+Z7lhtOAz1+y9vQm1Kdz9jlAO+qCEKsfxtUOmKilW8DIRqFw2aUgKeGg==}
@@ -18143,6 +18188,12 @@ packages:
 
   '@microsoft/microsoft-graph-types@2.40.0':
     resolution: {integrity: sha512-1fcPVrB/NkbNcGNfCy+Cgnvwxt6/sbIEEFgZHFBJ670zYLegENYJF8qMo7x3LqBjWX2/Eneq5BVVRCLTmlJN+g==}
+
+  '@microsoft/oteljs-1ds@4.23.1133':
+    resolution: {integrity: sha1-z92ZE+4Yr/ETnV0Vr88+3/LRaAA=}
+
+  '@microsoft/oteljs@4.23.1133':
+    resolution: {integrity: sha1-cNMajqAExZwiKex1apHJEXaAnro=}
 
   '@microsoft/tsdoc-config@0.16.2':
     resolution: {integrity: sha512-OGiIzzoBLgWWR0UdRJX98oYO+XKGf7tiK4Zk6tQ/E4IJqGCe7dvkTvgDZV5cFJUzLGDOjeAXrnZoA6QkVySuxw==}
@@ -18322,6 +18373,12 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  '@nevware21/ts-async@0.5.4':
+    resolution: {integrity: sha512-IBTyj29GwGlxfzXw2NPnzty+w0Adx61Eze1/lknH/XIVdxtF9UnOpk76tnrHXWa6j84a1RR9hsOcHQPFv9qJjA==}
+
+  '@nevware21/ts-utils@0.12.3':
+    resolution: {integrity: sha512-3GQDdX2Xmy1smEyR/U4FUTGEaL7fbGT8kU5tyfRz1CLZ+bM1smhKMth0NvVQNAh+qfYEtUBGCAWrARe4iMq5iQ==}
 
   '@next/env@14.2.27':
     resolution: {integrity: sha512-VLGHu7aBMK0rmSEPjx6qb4njGYfEfN5HpeYV32II1dNZZvPxqa+RfWVgPf4q6hmicavceAGeQneTxofx7Zm/yw==}
@@ -27035,6 +27092,10 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
+  uuid@10.0.0:
+    resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
+    hasBin: true
+
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
@@ -28164,6 +28225,19 @@ snapshots:
       - supports-color
 
   '@eslint/js@8.55.0': {}
+
+  '@ff-internal/aria-logger@0.0.22(tslib@1.14.1)':
+    dependencies:
+      '@fluidframework/common-definitions': 0.19.1
+      '@fluidframework/telemetry-utils': 0.36.1
+      '@fluidframework/test-driver-definitions': 0.36.1
+      '@microsoft/1ds-post-js': 4.3.6(tslib@1.14.1)
+      '@microsoft/oteljs': 4.23.1133
+      '@microsoft/oteljs-1ds': 4.23.1133
+      uuid: 10.0.0
+    transitivePeerDependencies:
+      - supports-color
+      - tslib
 
   '@floating-ui/core@1.6.8':
     dependencies:
@@ -29447,6 +29521,84 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@fluid-tools/build-cli@0.55.0(@types/node@18.19.67)(encoding@0.1.13)(typescript@5.4.5)':
+    dependencies:
+      '@andrewbranch/untar.js': 1.0.3
+      '@fluid-tools/build-infrastructure': 0.55.0(@types/node@18.19.67)
+      '@fluid-tools/version-tools': 0.55.0(@types/node@18.19.67)
+      '@fluidframework/build-tools': 0.55.0(@types/node@18.19.67)
+      '@fluidframework/bundle-size-tools': 0.55.0
+      '@inquirer/prompts': 7.2.0(@types/node@18.19.67)
+      '@microsoft/api-extractor': 7.52.5(patch_hash=ldzfpsbo3oeejrejk775zxplmi)(@types/node@18.19.67)
+      '@oclif/core': 4.0.36
+      '@oclif/plugin-autocomplete': 3.2.13
+      '@oclif/plugin-commands': 4.1.13
+      '@oclif/plugin-help': 6.2.19
+      '@oclif/plugin-not-found': 3.2.30(@types/node@18.19.67)
+      '@octokit/core': 5.2.0
+      '@octokit/rest': 21.0.2
+      '@rushstack/node-core-library': 5.13.0(@types/node@18.19.67)
+      async: 3.2.6
+      azure-devops-node-api: 11.2.0
+      change-case: 3.1.0
+      cosmiconfig: 8.3.6(typescript@5.4.5)
+      danger: 12.3.3(encoding@0.1.13)
+      date-fns: 2.30.0
+      debug: 4.4.0(supports-color@8.1.1)
+      execa: 5.1.1
+      fflate: 0.8.2
+      fs-extra: 11.3.0
+      github-slugger: 2.0.0
+      globby: 11.1.0
+      gray-matter: 4.0.3
+      human-id: 4.1.1
+      issue-parser: 7.0.1
+      json5: 2.2.3
+      jssm: 5.104.1
+      jszip: 3.10.1
+      latest-version: 9.0.0
+      mdast: 3.0.0
+      mdast-util-heading-range: 4.0.0
+      mdast-util-to-string: 4.0.0
+      minimatch: 7.4.6
+      npm-check-updates: 16.14.20
+      oclif: 4.16.2(@types/node@18.19.67)
+      picocolors: 1.1.1
+      prettier: 3.2.5
+      prompts: 2.4.2
+      read-pkg-up: 7.0.1
+      remark: 15.0.1
+      remark-gfm: 4.0.0
+      remark-github: 12.0.0
+      remark-github-beta-blockquote-admonitions: 3.1.1
+      remark-toc: 9.0.0
+      replace-in-file: 7.2.0
+      resolve.exports: 2.0.3
+      semver: 7.7.1
+      semver-utils: 1.1.4
+      simple-git: 3.27.0
+      sort-json: 2.0.1
+      sort-package-json: 1.57.0
+      strip-ansi: 6.0.1
+      table: 6.9.0
+      ts-morph: 22.0.0
+      type-fest: 2.19.0
+      unist-util-visit: 5.0.0
+      xml2js: 0.5.0
+    transitivePeerDependencies:
+      - '@swc/core'
+      - '@types/node'
+      - bluebird
+      - bufferutil
+      - encoding
+      - esbuild
+      - react-devtools-core
+      - supports-color
+      - typescript
+      - uglify-js
+      - utf-8-validate
+      - webpack-cli
+
   '@fluid-tools/build-cli@0.55.0(@types/node@18.19.67)(encoding@0.1.13)(typescript@5.4.5)(webpack-cli@5.1.4)':
     dependencies:
       '@andrewbranch/untar.js': 1.0.3
@@ -29904,6 +30056,20 @@ snapshots:
       - supports-color
       - utf-8-validate
 
+  '@fluidframework/bundle-size-tools@0.55.0':
+    dependencies:
+      azure-devops-node-api: 11.2.0
+      jszip: 3.10.1
+      msgpack-lite: 0.1.26
+      pako: 2.1.0
+      typescript: 5.4.5
+      webpack: 5.97.1
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
+      - webpack-cli
+
   '@fluidframework/bundle-size-tools@0.55.0(webpack-cli@5.1.4)':
     dependencies:
       azure-devops-node-api: 11.2.0
@@ -29931,9 +30097,21 @@ snapshots:
       - debug
       - supports-color
 
+  '@fluidframework/common-definitions@0.19.1': {}
+
   '@fluidframework/common-definitions@0.20.1': {}
 
   '@fluidframework/common-definitions@1.1.0': {}
+
+  '@fluidframework/common-utils@0.28.0':
+    dependencies:
+      '@fluidframework/common-definitions': 0.19.1
+      '@types/events': 3.0.3
+      assert: 2.1.0
+      base64-js: 1.5.1
+      events: 3.3.0
+      lodash: 4.17.21
+      sha.js: 2.4.11
 
   '@fluidframework/common-utils@0.32.2':
     dependencies:
@@ -30093,6 +30271,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@fluidframework/core-interfaces@0.36.1': {}
+
   '@fluidframework/core-interfaces@1.4.0': {}
 
   '@fluidframework/core-interfaces@2.33.0': {}
@@ -30237,6 +30417,12 @@ snapshots:
       - debug
       - supports-color
 
+  '@fluidframework/driver-definitions@0.36.1':
+    dependencies:
+      '@fluidframework/common-definitions': 0.19.1
+      '@fluidframework/core-interfaces': 0.36.1
+      '@fluidframework/protocol-definitions': 0.1021.0
+
   '@fluidframework/driver-definitions@1.4.0':
     dependencies:
       '@fluidframework/common-definitions': 0.20.1
@@ -30298,9 +30484,9 @@ snapshots:
       '@typescript-eslint/parser': 6.7.5(eslint@8.55.0)(typescript@5.4.5)
       eslint-config-biome: 1.9.4
       eslint-config-prettier: 9.0.0(eslint@8.55.0)
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint@8.55.0))(eslint@8.55.0)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1)(eslint@8.55.0)
       eslint-plugin-eslint-comments: 3.2.0(eslint@8.55.0)
-      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint@8.55.0))(eslint@8.55.0))(eslint@8.55.0)
+      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.3)(eslint@8.55.0)
       eslint-plugin-jsdoc: 46.8.2(eslint@8.55.0)
       eslint-plugin-promise: 6.1.1(eslint@8.55.0)
       eslint-plugin-react: 7.33.2(eslint@8.55.0)
@@ -30585,6 +30771,10 @@ snapshots:
       '@fluidframework/protocol-definitions': 3.2.0
       events_pkg: events@3.3.0
 
+  '@fluidframework/protocol-definitions@0.1021.0':
+    dependencies:
+      '@fluidframework/common-definitions': 0.19.1
+
   '@fluidframework/protocol-definitions@0.1028.2000':
     dependencies:
       '@fluidframework/common-definitions': 0.20.1
@@ -30777,6 +30967,33 @@ snapshots:
       nconf: 0.12.1
       serialize-error: 8.1.0
     transitivePeerDependencies:
+      - supports-color
+
+  '@fluidframework/server-lambdas@5.0.0':
+    dependencies:
+      '@fluidframework/common-utils': 3.1.0
+      '@fluidframework/gitresources': 5.0.0
+      '@fluidframework/protocol-base': 5.0.0
+      '@fluidframework/protocol-definitions': 3.2.0
+      '@fluidframework/server-lambdas-driver': 5.0.0
+      '@fluidframework/server-services-client': 5.0.0
+      '@fluidframework/server-services-core': 5.0.0
+      '@fluidframework/server-services-telemetry': 5.0.0
+      '@types/semver': 7.7.0
+      assert: 2.1.0
+      async: 3.2.6
+      axios: 1.8.4
+      buffer: 6.0.3
+      double-ended-queue: 2.1.0-0
+      events: 3.3.0
+      json-stringify-safe: 5.0.1
+      lodash: 4.17.21
+      nconf: 0.12.1
+      semver: 7.7.1
+      sha.js: 2.4.11
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - debug
       - supports-color
 
   '@fluidframework/server-lambdas@5.0.0(debug@4.4.0)':
@@ -31054,6 +31271,15 @@ snapshots:
       - debug
       - supports-color
 
+  '@fluidframework/telemetry-utils@0.36.1':
+    dependencies:
+      '@fluidframework/common-definitions': 0.19.1
+      '@fluidframework/common-utils': 0.28.0
+      debug: 4.4.0(supports-color@8.1.1)
+      events: 3.3.0
+    transitivePeerDependencies:
+      - supports-color
+
   '@fluidframework/telemetry-utils@1.4.0':
     dependencies:
       '@fluidframework/common-definitions': 0.20.1
@@ -31074,6 +31300,14 @@ snapshots:
       uuid: 9.0.1
     transitivePeerDependencies:
       - supports-color
+
+  '@fluidframework/test-driver-definitions@0.36.1':
+    dependencies:
+      '@fluidframework/common-definitions': 0.19.1
+      '@fluidframework/core-interfaces': 0.36.1
+      '@fluidframework/driver-definitions': 0.36.1
+      '@fluidframework/protocol-definitions': 0.1021.0
+      uuid: 8.3.2
 
   '@fluidframework/test-runtime-utils@2.33.0(encoding@0.1.13)':
     dependencies:
@@ -31960,6 +32194,16 @@ snapshots:
     transitivePeerDependencies:
       - tslib
 
+  '@microsoft/1ds-core-js@4.3.6(tslib@1.14.1)':
+    dependencies:
+      '@microsoft/applicationinsights-core-js': 3.3.6(tslib@1.14.1)
+      '@microsoft/applicationinsights-shims': 3.0.1
+      '@microsoft/dynamicproto-js': 2.0.3
+      '@nevware21/ts-async': 0.5.4
+      '@nevware21/ts-utils': 0.12.3
+    transitivePeerDependencies:
+      - tslib
+
   '@microsoft/1ds-post-js@3.2.18(tslib@1.14.1)':
     dependencies:
       '@microsoft/1ds-core-js': 3.2.18(tslib@1.14.1)
@@ -31968,23 +32212,33 @@ snapshots:
     transitivePeerDependencies:
       - tslib
 
-  '@microsoft/api-documenter@7.26.2(@types/node@22.10.1)':
+  '@microsoft/1ds-post-js@4.3.6(tslib@1.14.1)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.30.0(@types/node@22.10.1)
+      '@microsoft/1ds-core-js': 4.3.6(tslib@1.14.1)
+      '@microsoft/applicationinsights-shims': 3.0.1
+      '@microsoft/dynamicproto-js': 2.0.3
+      '@nevware21/ts-async': 0.5.4
+      '@nevware21/ts-utils': 0.12.3
+    transitivePeerDependencies:
+      - tslib
+
+  '@microsoft/api-documenter@7.26.2(@types/node@18.19.67)':
+    dependencies:
+      '@microsoft/api-extractor-model': 7.30.0(@types/node@18.19.67)
       '@microsoft/tsdoc': 0.15.1
-      '@rushstack/node-core-library': 5.10.0(@types/node@22.10.1)
-      '@rushstack/terminal': 0.14.3(@types/node@22.10.1)
-      '@rushstack/ts-command-line': 4.23.1(@types/node@22.10.1)
+      '@rushstack/node-core-library': 5.10.0(@types/node@18.19.67)
+      '@rushstack/terminal': 0.14.3(@types/node@18.19.67)
+      '@rushstack/ts-command-line': 4.23.1(@types/node@18.19.67)
       js-yaml: 3.13.1
       resolve: 1.22.10
     transitivePeerDependencies:
       - '@types/node'
 
-  '@microsoft/api-extractor-model@7.30.0(@types/node@22.10.1)':
+  '@microsoft/api-extractor-model@7.30.0(@types/node@18.19.67)':
     dependencies:
       '@microsoft/tsdoc': 0.15.1
       '@microsoft/tsdoc-config': 0.17.1
-      '@rushstack/node-core-library': 5.10.0(@types/node@22.10.1)
+      '@rushstack/node-core-library': 5.10.0(@types/node@18.19.67)
     transitivePeerDependencies:
       - '@types/node'
 
@@ -32069,6 +32323,14 @@ snapshots:
       '@microsoft/dynamicproto-js': 1.1.11
       tslib: 1.14.1
 
+  '@microsoft/applicationinsights-core-js@3.3.6(tslib@1.14.1)':
+    dependencies:
+      '@microsoft/applicationinsights-shims': 3.0.1
+      '@microsoft/dynamicproto-js': 2.0.3
+      '@nevware21/ts-async': 0.5.4
+      '@nevware21/ts-utils': 0.12.3
+      tslib: 1.14.1
+
   '@microsoft/applicationinsights-dependencies-js@2.8.18(tslib@1.14.1)':
     dependencies:
       '@microsoft/applicationinsights-common': 2.8.18(tslib@1.14.1)
@@ -32087,6 +32349,10 @@ snapshots:
 
   '@microsoft/applicationinsights-shims@2.0.2': {}
 
+  '@microsoft/applicationinsights-shims@3.0.1':
+    dependencies:
+      '@nevware21/ts-utils': 0.12.3
+
   '@microsoft/applicationinsights-web@2.8.18(tslib@1.14.1)':
     dependencies:
       '@microsoft/applicationinsights-analytics-js': 2.8.18(tslib@1.14.1)
@@ -32101,6 +32367,10 @@ snapshots:
 
   '@microsoft/dynamicproto-js@1.1.11': {}
 
+  '@microsoft/dynamicproto-js@2.0.3':
+    dependencies:
+      '@nevware21/ts-utils': 0.12.3
+
   '@microsoft/load-themed-styles@1.10.295': {}
 
   '@microsoft/microsoft-graph-client@3.0.7(@azure/identity@4.5.0)(@azure/msal-browser@3.27.0)':
@@ -32112,6 +32382,17 @@ snapshots:
       '@azure/msal-browser': 3.27.0
 
   '@microsoft/microsoft-graph-types@2.40.0': {}
+
+  '@microsoft/oteljs-1ds@4.23.1133':
+    dependencies:
+      '@microsoft/1ds-core-js': 3.2.18(tslib@1.14.1)
+      '@microsoft/1ds-post-js': 3.2.18(tslib@1.14.1)
+      '@microsoft/oteljs': 4.23.1133
+      tslib: 1.14.1
+
+  '@microsoft/oteljs@4.23.1133':
+    dependencies:
+      tslib: 1.14.1
 
   '@microsoft/tsdoc-config@0.16.2':
     dependencies:
@@ -32282,6 +32563,12 @@ snapshots:
       react-is: 19.0.0
     optionalDependencies:
       '@types/react': 18.3.15
+
+  '@nevware21/ts-async@0.5.4':
+    dependencies:
+      '@nevware21/ts-utils': 0.12.3
+
+  '@nevware21/ts-utils@0.12.3': {}
 
   '@next/env@14.2.27': {}
 
@@ -32816,7 +33103,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 18.19.67
 
-  '@rushstack/node-core-library@5.10.0(@types/node@22.10.1)':
+  '@rushstack/node-core-library@5.10.0(@types/node@18.19.67)':
     dependencies:
       ajv: 8.13.0
       ajv-draft-04: 1.0.0(ajv@8.13.0)
@@ -32827,7 +33114,7 @@ snapshots:
       resolve: 1.22.10
       semver: 7.5.4
     optionalDependencies:
-      '@types/node': 22.10.1
+      '@types/node': 18.19.67
 
   '@rushstack/node-core-library@5.13.0(@types/node@18.19.67)':
     dependencies:
@@ -32860,12 +33147,12 @@ snapshots:
       resolve: 1.22.10
       strip-json-comments: 3.1.1
 
-  '@rushstack/terminal@0.14.3(@types/node@22.10.1)':
+  '@rushstack/terminal@0.14.3(@types/node@18.19.67)':
     dependencies:
-      '@rushstack/node-core-library': 5.10.0(@types/node@22.10.1)
+      '@rushstack/node-core-library': 5.10.0(@types/node@18.19.67)
       supports-color: 8.1.1
     optionalDependencies:
-      '@types/node': 22.10.1
+      '@types/node': 18.19.67
 
   '@rushstack/terminal@0.15.2(@types/node@18.19.67)':
     dependencies:
@@ -32883,9 +33170,9 @@ snapshots:
 
   '@rushstack/tree-pattern@0.3.1': {}
 
-  '@rushstack/ts-command-line@4.23.1(@types/node@22.10.1)':
+  '@rushstack/ts-command-line@4.23.1(@types/node@18.19.67)':
     dependencies:
-      '@rushstack/terminal': 0.14.3(@types/node@22.10.1)
+      '@rushstack/terminal': 0.14.3(@types/node@18.19.67)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -33913,7 +34200,7 @@ snapshots:
 
   '@vvago/vale@3.11.2':
     dependencies:
-      axios: 1.8.4(debug@4.4.0)
+      axios: 1.8.4
       rimraf: 5.0.10
       tar: 6.2.1
       unzipper: 0.10.14
@@ -34361,6 +34648,14 @@ snapshots:
   axe-core@4.10.2: {}
 
   axios@0.30.0(debug@4.4.0):
+    dependencies:
+      follow-redirects: 1.15.9(debug@4.4.0)
+      form-data: 4.0.1
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  axios@1.8.4:
     dependencies:
       follow-redirects: 1.15.9(debug@4.4.0)
       form-data: 4.0.1
@@ -36143,33 +36438,33 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint@8.55.0))(eslint@8.55.0):
+  eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1)(eslint@8.55.0):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.0(supports-color@8.1.1)
       enhanced-resolve: 5.17.1
       eslint: 8.55.0
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint@8.55.0))(eslint@8.55.0))(eslint@8.55.0)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.55.0)
       fast-glob: 3.3.3
       get-tsconfig: 4.10.0
       is-bun-module: 1.3.0
       is-glob: 4.0.3
     optionalDependencies:
-      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint@8.55.0))(eslint@8.55.0))(eslint@8.55.0)
+      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.3)(eslint@8.55.0)
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-node
       - eslint-import-resolver-webpack
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint@8.55.0))(eslint@8.55.0))(eslint@8.55.0):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.55.0):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 6.7.5(eslint@8.55.0)(typescript@5.4.5)
       eslint: 8.55.0
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint@8.55.0))(eslint@8.55.0)
+      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1)(eslint@8.55.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -36183,13 +36478,13 @@ snapshots:
       eslint: 8.55.0
       ignore: 5.3.2
 
-  eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint@8.55.0))(eslint@8.55.0))(eslint@8.55.0):
+  eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-typescript@3.6.3)(eslint@8.55.0):
     dependencies:
       debug: 4.4.0(supports-color@8.1.1)
       doctrine: 3.0.0
       eslint: 8.55.0
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-plugin-i@2.29.1(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint@8.55.0))(eslint@8.55.0))(eslint@8.55.0)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@6.7.5(eslint@8.55.0)(typescript@5.4.5))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.3)(eslint@8.55.0)
       get-tsconfig: 4.10.0
       is-glob: 4.0.3
       minimatch: 3.1.2
@@ -42608,7 +42903,7 @@ snapshots:
       schema-utils: 3.3.0
       serialize-javascript: 6.0.2
       terser: 5.37.0
-      webpack: 5.97.1(webpack-cli@5.1.4)
+      webpack: 5.97.1
 
   terser@5.37.0:
     dependencies:
@@ -42685,7 +42980,7 @@ snapshots:
       '@fluidframework/gitresources': 5.0.0
       '@fluidframework/protocol-base': 5.0.0
       '@fluidframework/protocol-definitions': 3.2.0
-      '@fluidframework/server-lambdas': 5.0.0(debug@4.4.0)
+      '@fluidframework/server-lambdas': 5.0.0
       '@fluidframework/server-local-server': 5.0.0
       '@fluidframework/server-memory-orderer': 5.0.0
       '@fluidframework/server-services-client': 5.0.0
@@ -42695,7 +42990,7 @@ snapshots:
       '@fluidframework/server-services-utils': 5.0.0
       '@fluidframework/server-test-utils': 5.0.0
       agentkeepalive: 4.5.0
-      axios: 1.8.4(debug@4.4.0)
+      axios: 1.8.4
       body-parser: 1.20.3
       charwise: 3.0.1
       compression: 1.7.5
@@ -43292,6 +43587,8 @@ snapshots:
 
   utils-merge@1.0.1: {}
 
+  uuid@10.0.0: {}
+
   uuid@8.3.2: {}
 
   uuid@9.0.1: {}
@@ -43640,6 +43937,36 @@ snapshots:
       wildcard: 2.0.1
 
   webpack-sources@3.2.3: {}
+
+  webpack@5.97.1:
+    dependencies:
+      '@types/eslint-scope': 3.7.7
+      '@types/estree': 1.0.6
+      '@webassemblyjs/ast': 1.14.1
+      '@webassemblyjs/wasm-edit': 1.14.1
+      '@webassemblyjs/wasm-parser': 1.14.1
+      acorn: 8.14.1
+      browserslist: 4.24.2
+      chrome-trace-event: 1.0.4
+      enhanced-resolve: 5.17.1
+      es-module-lexer: 1.5.4
+      eslint-scope: 5.1.1
+      events: 3.3.0
+      glob-to-regexp: 0.4.1
+      graceful-fs: 4.2.11
+      json-parse-even-better-errors: 2.3.1
+      loader-runner: 4.3.0
+      mime-types: 2.1.35
+      neo-async: 2.6.2
+      schema-utils: 3.3.0
+      tapable: 2.2.1
+      terser-webpack-plugin: 5.3.10(webpack@5.97.1)
+      watchpack: 2.4.2
+      webpack-sources: 3.2.3
+    transitivePeerDependencies:
+      - '@swc/core'
+      - esbuild
+      - uglify-js
 
   webpack@5.97.1(webpack-cli@5.1.4):
     dependencies:
