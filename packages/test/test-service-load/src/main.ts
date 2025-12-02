@@ -41,6 +41,11 @@ const readRunOptions = () => {
 			"Flag indicating whether to create a document corresponding \
         to the testId passed",
 		)
+		.option(
+			"--mixedVersions",
+			"Enable mixed-version testing with previous major version (N-1)",
+		)
+		.option("--previousVersion <version>", "Previous version to use (N-1 of current version)")
 		.parse(process.argv);
 
 	const driver: TestDriverTypes = commander.driver;
@@ -55,6 +60,8 @@ const readRunOptions = () => {
 	const credFilePath: string | undefined = commander.credFile;
 	const enableMetrics: boolean = commander.enableMetrics ?? false;
 	const createTestId: boolean = commander.createTestId ?? false;
+	const mixedVersions: boolean = commander.mixedVersions ?? false;
+	const previousVersion: string | undefined = commander.previousVersion;
 
 	return {
 		driver,
@@ -69,6 +76,8 @@ const readRunOptions = () => {
 		credFilePath,
 		enableMetrics,
 		createTestId,
+		mixedVersions,
+		previousVersion,
 	};
 };
 
@@ -86,6 +95,8 @@ const main = async () => {
 		credFilePath,
 		enableMetrics,
 		createTestId,
+		mixedVersions,
+		previousVersion,
 	} = readRunOptions();
 
 	if (log !== undefined) {
@@ -126,6 +137,8 @@ const main = async () => {
 			profileName,
 			logger,
 			outputDir,
+			mixedVersions,
+			previousVersion,
 		});
 		result = 0;
 	} finally {

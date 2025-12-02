@@ -36,6 +36,8 @@ export async function stressTest(
 		profileName: string;
 		logger: ITelemetryLoggerExt;
 		outputDir: string;
+		mixedVersions: boolean;
+		previousVersion: string | undefined;
 	},
 ) {
 	const {
@@ -49,6 +51,8 @@ export async function stressTest(
 		profileName,
 		logger,
 		outputDir,
+		mixedVersions,
+		previousVersion,
 	} = args;
 
 	const url = await (testId !== undefined && !createTestId
@@ -73,10 +77,15 @@ export async function stressTest(
 	console.log(`Estimated run time: ${estRunningTimeMin} minutes\n`);
 	console.log(`Start time: ${startTime} ms\n`);
 
+	// REMOVE BEFORE MERGE Version Compat console.logs to see what is happpening
+	console.log(`Previous version: (${previousVersion})`);
+
 	const runnerArgs: string[][] = [];
 	for (let i = 0; i < profile.numClients; i++) {
 		const childArgs: string[] = [
-			"./dist/runner.js",
+			i > profile.numClients / 2 && mixedVersions
+				? `./node_modules/.legacy/${previousVersion}/dist/runner.js`
+				: "./dist/runner.js",
 			"--driver",
 			testDriver.type,
 			"--profile",
