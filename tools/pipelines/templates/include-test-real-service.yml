@@ -126,6 +126,11 @@ parameters:
   type: boolean
   default: false
 
+# If true, enable mixed-version testing where half the clients use the previous major version
+- name: enableMixedVersions
+  type: boolean
+  default: false
+
 # Tags for docker environment setup
 - name: alfredImageTag
   type: string
@@ -340,6 +345,65 @@ stages:
             workingDirectory: ${{ variables.pipelineHostPath }}
             script: 'pnpm install $(Initialize.testPackageTgz)'
 
+        # Mixed-version testing: compute and install previous version
+        - ${{ if eq(parameters.enableMixedVersions, true) }}:
+          - task: Bash@3
+            name: ComputePreviousVersion
+            displayName: 'Compute previous major version'
+            inputs:
+              targetType: 'inline'
+              workingDirectory: ${{ variables.pipelineHostPath }}
+              script: |
+                set -eu -o pipefail
+
+                # Get the current version from the installed package
+                CURRENT_VERSION=$(node -e "const pkg = require('${{ variables.testPackageDir }}/package.json'); console.log(pkg.version);")
+                echo "Current version: $CURRENT_VERSION"
+
+                # Extract major and minor version components
+                MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+                MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+
+                # Calculate previous major version (for 2.x series, go back 10 minor versions)
+                # e.g., 2.73.0 -> 2.60.0, 2.60.0 -> 2.50.0
+                CURRENT_MAJOR_MINOR=$((MINOR / 10 * 10))
+                PREVIOUS_MINOR=$((CURRENT_MAJOR_MINOR - 10))
+
+                if [ $PREVIOUS_MINOR -lt 0 ]; then
+                  echo "##vso[task.logissue type=error]Cannot compute previous major version for $CURRENT_VERSION"
+                  exit 1
+                fi
+
+                PREVIOUS_VERSION="${MAJOR}.${PREVIOUS_MINOR}.0"
+                echo "Previous major version: $PREVIOUS_VERSION"
+
+                echo "##vso[task.setvariable variable=currentVersion;isOutput=true]$CURRENT_VERSION"
+                echo "##vso[task.setvariable variable=previousVersion;isOutput=true]$PREVIOUS_VERSION"
+
+          - task: Bash@3
+            displayName: 'Install previous version of test package'
+            inputs:
+              targetType: 'inline'
+              workingDirectory: ${{ variables.pipelineHostPath }}
+              script: |
+                set -eu -o pipefail
+
+                PREVIOUS_VERSION=$(ComputePreviousVersion.previousVersion)
+                LEGACY_PATH="${{ variables.testPackageDir }}/node_modules/.legacy/${PREVIOUS_VERSION}"
+
+                echo "Installing ${{ parameters.testPackage }}@${PREVIOUS_VERSION} at ${LEGACY_PATH}"
+
+                # Create the legacy directory
+                mkdir -p "${LEGACY_PATH}"
+
+                # Initialize npm in the legacy directory and install the previous version
+                cd "${LEGACY_PATH}"
+                npm init --yes
+                npm install --no-package-lock "${{ parameters.testPackage }}@${PREVIOUS_VERSION}"
+
+                echo "Previous version installed successfully at ${LEGACY_PATH}"
+                ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
+
         # Download Test Files & Install Extra Dependencies
         # These steps are intended to include extra dependencies that are not available as
         # part of the normal package .tgz installed previously in the pipeline.
@@ -471,7 +535,10 @@ stages:
           inputs:
             command: 'custom'
             workingDir: ${{ variables.pipelineHostPath }}/node_modules/${{ parameters.testPackage }}
-            customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
+            ${{ if eq(parameters.enableMixedVersions, true) }}:
+              customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --mixedVersions --previousVersion $(ComputePreviousVersion.previousVersion)'
+            ${{ else }}:
+              customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
 
         - ${{ if eq(parameters.skipTestResultPublishing, false) }}:
           # filter report
