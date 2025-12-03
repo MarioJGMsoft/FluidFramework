@@ -508,6 +508,19 @@ extends:
                       pnpm store prune
 
               - task: Bash@3
+                displayName: Debugging - List modified files after build
+                inputs:
+                  targetType: inline
+                  script: |
+                    # Note: deliberately not using `set -eu -o pipefail` because this script leverages the return code of grep
+                    # even in an error case
+                    echo "Modified files after build:"
+                    git status
+                    git diff
+
+
+
+              - task: Bash@3
                 displayName: Check for extraneous modified files
                 inputs:
                   targetType: inline
