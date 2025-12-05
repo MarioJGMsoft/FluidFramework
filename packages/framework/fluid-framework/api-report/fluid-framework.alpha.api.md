@@ -395,6 +395,7 @@ export const FluidClientVersion: {
     readonly v2_43: "2.43.0";
     readonly v2_52: "2.52.0";
     readonly v2_73: "2.73.0";
+    readonly v2_74: "2.74.0";
 };
 
 // @public
@@ -1024,7 +1025,6 @@ export interface LeafSchema<Name extends string, T extends TreeLeafValue> extend
 // @public @sealed
 export interface Listenable<TListeners extends object> {
     off<K extends keyof Listeners<TListeners>>(eventName: K, listener: TListeners[K]): void;
-    // (undocumented)
     on<K extends keyof Listeners<TListeners>>(eventName: K, listener: TListeners[K]): Off;
 }
 
