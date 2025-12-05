@@ -360,21 +360,22 @@ stages:
                 CURRENT_VERSION=$(node -e "const pkg = require('${{ variables.testPackageDir }}/package.json'); console.log(pkg.version);")
                 echo "Current version: $CURRENT_VERSION"
 
-                # Extract major and minor version components
-                MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
-                MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+                # # Extract major and minor version components
+                # MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+                # MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
 
-                # Calculate previous major version (for 2.x series, go back 10 minor versions)
-                # e.g., 2.73.0 -> 2.60.0, 2.60.0 -> 2.50.0
-                CURRENT_MAJOR_MINOR=$((MINOR / 10 * 10))
-                PREVIOUS_MINOR=$((CURRENT_MAJOR_MINOR - 10))
+                # # Calculate previous major version (for 2.x series, go back 10 minor versions)
+                # # e.g., 2.73.0 -> 2.60.0, 2.60.0 -> 2.50.0
+                # CURRENT_MAJOR_MINOR=$((MINOR / 10 * 10))
+                # PREVIOUS_MINOR=$((CURRENT_MAJOR_MINOR - 10))
 
-                if [ $PREVIOUS_MINOR -lt 0 ]; then
-                  echo "##vso[task.logissue type=error]Cannot compute previous major version for $CURRENT_VERSION"
-                  exit 1
-                fi
+                # if [ $PREVIOUS_MINOR -lt 0 ]; then
+                #   echo "##vso[task.logissue type=error]Cannot compute previous major version for $CURRENT_VERSION"
+                #   exit 1
+                # fi
 
-                PREVIOUS_VERSION="${MAJOR}.${PREVIOUS_MINOR}.0"
+                # Hardcoding the previous version since the test build version that is generated is 0.0.0
+                PREVIOUS_VERSION="2.60.0"
                 echo "Previous major version: $PREVIOUS_VERSION"
 
                 echo "##vso[task.setvariable variable=currentVersion;isOutput=true]$CURRENT_VERSION"
