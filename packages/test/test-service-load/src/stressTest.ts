@@ -84,7 +84,7 @@ export async function stressTest(
 	for (let i = 0; i < profile.numClients; i++) {
 		const childArgs: string[] = [
 			i > profile.numClients / 2 && mixedVersions
-				? `./node_modules/.legacy/${previousVersion}/dist/runner.js`
+				? `/mnt/vss/_work/1/s/node_modules/@***-internal/test-service-load/node_modules/.legacy/${previousVersion}/dist/runner.js`
 				: "./dist/runner.js",
 			"--driver",
 			testDriver.type,
