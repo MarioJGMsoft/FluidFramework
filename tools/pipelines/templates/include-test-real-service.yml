@@ -384,6 +384,7 @@ stages:
           - task: Bash@3
             name: InstallPreviousVersion
             displayName: 'Install previous version of test package'
+            retryCountOnTaskFailure: 10
             inputs:
               targetType: 'inline'
               workingDirectory: ${{ variables.pipelineHostPath }}
@@ -398,10 +399,9 @@ stages:
                 # Create the legacy directory
                 mkdir -p "${LEGACY_PATH}"
 
-                # Initialize npm in the legacy directory and install the previous version
+                # Install the previous version using pnpm
                 cd "${LEGACY_PATH}"
-                npm init --yes
-                npm install --no-package-lock "${{ parameters.testPackage }}@${PREVIOUS_VERSION}"
+                pnpm install "${{ parameters.testPackage }}@${PREVIOUS_VERSION}"
 
                 echo "Previous version installed successfully at ${LEGACY_PATH}"
                 ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
