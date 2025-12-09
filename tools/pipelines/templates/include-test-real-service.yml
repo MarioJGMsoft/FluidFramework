@@ -403,7 +403,7 @@ stages:
                 cd "${LEGACY_PATH}"
                 pnpm install "${{ parameters.testPackage }}@${PREVIOUS_VERSION}"
 
-                echo "Previous version installed successfully at ${LEGACY_PATH}"
+                echo "Previous version installed successfully at ${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
                 ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
                 echo "Contents of dist folder:"
                 ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/dist/"
