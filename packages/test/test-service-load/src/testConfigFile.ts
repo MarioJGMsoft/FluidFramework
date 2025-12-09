@@ -134,6 +134,10 @@ export interface TestConfiguration {
 		 * A string that points towards the previous version from the one that is being used in a test
 		 */
 		previousVersion?: string;
+		/**
+		 * A string that points towards the path of the previous version from the one that is being used in a test
+		 */
+		previousVersionPath?: string;
 	};
 }
 

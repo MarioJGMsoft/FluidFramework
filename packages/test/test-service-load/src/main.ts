@@ -46,6 +46,7 @@ const readRunOptions = () => {
 			"Enable mixed-version testing with previous major version (N-1)",
 		)
 		.option("--previousVersion <version>", "Previous version to use (N-1 of current version)")
+		.option("--previousVersionPath <path>", "Path to previous version installation")
 		.parse(process.argv);
 
 	const driver: TestDriverTypes = commander.driver;
@@ -62,6 +63,7 @@ const readRunOptions = () => {
 	const createTestId: boolean = commander.createTestId ?? false;
 	const mixedVersions: boolean = commander.mixedVersions ?? false;
 	const previousVersion: string | undefined = commander.previousVersion;
+	const previousVersionPath: string | undefined = commander.previousVersionPath;
 
 	return {
 		driver,
@@ -78,6 +80,7 @@ const readRunOptions = () => {
 		createTestId,
 		mixedVersions,
 		previousVersion,
+		previousVersionPath,
 	};
 };
 
@@ -97,6 +100,7 @@ const main = async () => {
 		createTestId,
 		mixedVersions,
 		previousVersion,
+		previousVersionPath,
 	} = readRunOptions();
 
 	if (log !== undefined) {
@@ -139,6 +143,7 @@ const main = async () => {
 			outputDir,
 			mixedVersions,
 			previousVersion,
+			previousVersionPath,
 		});
 		result = 0;
 	} finally {

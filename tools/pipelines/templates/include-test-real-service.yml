@@ -382,6 +382,7 @@ stages:
                 echo "##vso[task.setvariable variable=previousVersion;isOutput=true]$PREVIOUS_VERSION"
 
           - task: Bash@3
+            name: InstallPreviousVersion
             displayName: 'Install previous version of test package'
             inputs:
               targetType: 'inline'
@@ -404,6 +405,11 @@ stages:
 
                 echo "Previous version installed successfully at ${LEGACY_PATH}"
                 ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
+                echo "Contents of dist folder:"
+                ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/dist/"
+
+                # Set output variable for the legacy path
+                echo "##vso[task.setvariable variable=previousVersionPath;isOutput=true]${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}"
 
 
         # Download Test Files & Install Extra Dependencies
@@ -538,7 +544,7 @@ stages:
             command: 'custom'
             workingDir: ${{ variables.pipelineHostPath }}/node_modules/${{ parameters.testPackage }}
             ${{ if eq(parameters.enableMixedVersions, true) }}:
-              customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --mixedVersions --previousVersion $(ComputePreviousVersion.previousVersion)'
+              customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --mixedVersions --previousVersion $(ComputePreviousVersion.previousVersion) --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
             ${{ else }}:
               customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
 

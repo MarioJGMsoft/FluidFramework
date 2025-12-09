@@ -38,6 +38,7 @@ export async function stressTest(
 		outputDir: string;
 		mixedVersions: boolean;
 		previousVersion: string | undefined;
+		previousVersionPath: string | undefined;
 	},
 ) {
 	const {
@@ -53,6 +54,7 @@ export async function stressTest(
 		outputDir,
 		mixedVersions,
 		previousVersion,
+		previousVersionPath,
 	} = args;
 
 	const url = await (testId !== undefined && !createTestId
@@ -84,7 +86,7 @@ export async function stressTest(
 	for (let i = 0; i < profile.numClients; i++) {
 		const childArgs: string[] = [
 			i > profile.numClients / 2 && mixedVersions
-				? `/mnt/vss/_work/1/s/node_modules/@***-internal/test-service-load/node_modules/.legacy/${previousVersion}/dist/runner.js`
+				? `${previousVersionPath}/dist/runner.js`
 				: "./dist/runner.js",
 			"--driver",
 			testDriver.type,
