@@ -41,7 +41,10 @@ const readRunOptions = () => {
 			"Flag indicating whether to create a document corresponding \
         to the testId passed",
 		)
-		.option("--compatMode", "Enable compatibility testing with previous major version (N-1)")
+		.option(
+			"--compatibilityMode",
+			"Enable compatibility testing with previous major version (N-1)",
+		)
 		.option(
 			"--previousVersionPath <path>",
 			"Path where the previous version of the stress test-service-load package is located",
@@ -60,7 +63,7 @@ const readRunOptions = () => {
 	const credFilePath: string | undefined = commander.credFile;
 	const enableMetrics: boolean = commander.enableMetrics ?? false;
 	const createTestId: boolean = commander.createTestId ?? false;
-	const compatMode: boolean = commander.compatMode ?? false;
+	const compatibilityMode: boolean = commander.compatibilityMode ?? false;
 	const previousVersionPath: string | undefined = commander.previousVersionPath;
 
 	return {
@@ -76,7 +79,7 @@ const readRunOptions = () => {
 		credFilePath,
 		enableMetrics,
 		createTestId,
-		compatMode,
+		compatibilityMode,
 		previousVersionPath,
 	};
 };
@@ -95,7 +98,7 @@ const main = async () => {
 		credFilePath,
 		enableMetrics,
 		createTestId,
-		compatMode,
+		compatibilityMode,
 		previousVersionPath,
 	} = readRunOptions();
 
@@ -137,7 +140,7 @@ const main = async () => {
 			profileName,
 			logger,
 			outputDir,
-			compatMode,
+			compatibilityMode,
 			previousVersionPath,
 		});
 		result = 0;

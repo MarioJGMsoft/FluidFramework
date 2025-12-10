@@ -53,7 +53,7 @@ stages:
       testCommand: start:t9s
       skipTestResultPublishing: true
       pipelineIdentifierForTelemetry: ${{ variables.pipelineIdentifierForTelemetry }}
-      enableMixedVersions: true
+      enableCompatibilityMode: true
       env:
         FLUID_TEST_LOGGER_PKG_SPECIFIER: '@ff-internal/aria-logger' # Contains getTestLogger impl to inject
         FLUID_LOGGER_PROPS: '{ "displayName": "${{variables.pipelineIdentifierForTelemetry}}"}'

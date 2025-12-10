@@ -126,8 +126,8 @@ parameters:
   type: boolean
   default: false
 
-# If true, enable mixed-version testing where half the clients use the previous major version
-- name: enableMixedVersions
+# If true, enable compatibility testing where half the clients use the previous major version
+- name: enableCompatibilityMode
   type: boolean
   default: false
 
@@ -346,7 +346,7 @@ stages:
             script: 'pnpm install $(Initialize.testPackageTgz)'
 
         # Mixed-version testing: compute and install previous version
-        - ${{ if eq(parameters.enableMixedVersions, true) }}:
+        - ${{ if eq(parameters.enableCompatibilityMode, true) }}:
           - task: Bash@3
             name: ComputePreviousVersion
             displayName: 'Compute previous major version'
@@ -544,11 +544,11 @@ stages:
           inputs:
             command: 'custom'
             workingDir: ${{ variables.pipelineHostPath }}/node_modules/${{ parameters.testPackage }}
-            ${{ if eq(parameters.enableMixedVersions, true) }}:
+            ${{ if eq(parameters.enableCompatibilityMode, true) }}:
               ${{ if ne(variant.flags, '') }}:
-                customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --mixedVersions --previousVersion $(ComputePreviousVersion.previousVersion) --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
+                customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
               ${{ else }}:
-                customCommand: 'run ${{ parameters.testCommand }} --mixedVersions --previousVersion $(ComputePreviousVersion.previousVersion) --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
+                customCommand: 'run ${{ parameters.testCommand }} --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
             ${{ else }}:
               ${{ if ne(variant.flags, '') }}:
                 customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'

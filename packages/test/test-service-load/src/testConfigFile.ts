@@ -125,7 +125,7 @@ export interface TestConfiguration {
 	 * Configuration for compatibility testing.
 	 * When enabled, some clients will run with the previous major version (N-1).
 	 */
-	compatMode?: {
+	compatibilityMode?: {
 		/**
 		 * Variable to enable or disable the compatibility testing
 		 */
