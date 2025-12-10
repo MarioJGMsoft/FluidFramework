@@ -122,18 +122,14 @@ export interface TestConfiguration {
 		numClients?: number;
 	};
 	/**
-	 * Configuration for mixed-version compatibility testing.
+	 * Configuration for compatibility testing.
 	 * When enabled, some clients will run with the previous major version (N-1).
 	 */
-	mixedVersions?: {
+	compatMode?: {
 		/**
-		 * Variable to enable or disable the mixed version testing
+		 * Variable to enable or disable the compatibility testing
 		 */
 		enabled: boolean;
-		/**
-		 * A string that points towards the previous version from the one that is being used in a test
-		 */
-		previousVersion?: string;
 		/**
 		 * A string that points towards the path of the previous version from the one that is being used in a test
 		 */

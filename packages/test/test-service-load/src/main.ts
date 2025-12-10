@@ -41,12 +41,11 @@ const readRunOptions = () => {
 			"Flag indicating whether to create a document corresponding \
         to the testId passed",
 		)
+		.option("--compatMode", "Enable compatibility testing with previous major version (N-1)")
 		.option(
-			"--mixedVersions",
-			"Enable mixed-version testing with previous major version (N-1)",
+			"--previousVersionPath <path>",
+			"Path where the previous version of the stress test-service-load package is located",
 		)
-		.option("--previousVersion <version>", "Previous version to use (N-1 of current version)")
-		.option("--previousVersionPath <path>", "Path to previous version installation")
 		.parse(process.argv);
 
 	const driver: TestDriverTypes = commander.driver;
@@ -61,8 +60,7 @@ const readRunOptions = () => {
 	const credFilePath: string | undefined = commander.credFile;
 	const enableMetrics: boolean = commander.enableMetrics ?? false;
 	const createTestId: boolean = commander.createTestId ?? false;
-	const mixedVersions: boolean = commander.mixedVersions ?? false;
-	const previousVersion: string | undefined = commander.previousVersion;
+	const compatMode: boolean = commander.compatMode ?? false;
 	const previousVersionPath: string | undefined = commander.previousVersionPath;
 
 	return {
@@ -78,8 +76,7 @@ const readRunOptions = () => {
 		credFilePath,
 		enableMetrics,
 		createTestId,
-		mixedVersions,
-		previousVersion,
+		compatMode,
 		previousVersionPath,
 	};
 };
@@ -98,8 +95,7 @@ const main = async () => {
 		credFilePath,
 		enableMetrics,
 		createTestId,
-		mixedVersions,
-		previousVersion,
+		compatMode,
 		previousVersionPath,
 	} = readRunOptions();
 
@@ -141,8 +137,7 @@ const main = async () => {
 			profileName,
 			logger,
 			outputDir,
-			mixedVersions,
-			previousVersion,
+			compatMode,
 			previousVersionPath,
 		});
 		result = 0;
