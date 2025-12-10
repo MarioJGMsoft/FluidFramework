@@ -399,9 +399,10 @@ stages:
                 # Create the legacy directory
                 mkdir -p "${LEGACY_PATH}"
 
-                # Install the previous version using npm with legacy peer deps to avoid resolution issues
+                # Install the previous version using npm
                 cd "${LEGACY_PATH}"
-                npm install --no-package-lock --legacy-peer-deps "${{ parameters.testPackage }}@${PREVIOUS_VERSION}"
+                npm init --yes
+                npm install --no-package-lock "${{ parameters.testPackage }}@${PREVIOUS_VERSION}"
 
                 echo "Previous version installed successfully at ${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
                 ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
