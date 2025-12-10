@@ -545,9 +545,15 @@ stages:
             command: 'custom'
             workingDir: ${{ variables.pipelineHostPath }}/node_modules/${{ parameters.testPackage }}
             ${{ if eq(parameters.enableMixedVersions, true) }}:
-              customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --mixedVersions --previousVersion $(ComputePreviousVersion.previousVersion) --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
+              ${{ if ne(variant.flags, '') }}:
+                customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --mixedVersions --previousVersion $(ComputePreviousVersion.previousVersion) --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
+              ${{ else }}:
+                customCommand: 'run ${{ parameters.testCommand }} --mixedVersions --previousVersion $(ComputePreviousVersion.previousVersion) --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
             ${{ else }}:
-              customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
+              ${{ if ne(variant.flags, '') }}:
+                customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
+              ${{ else }}:
+                customCommand: 'run ${{ parameters.testCommand }}'
 
         - ${{ if eq(parameters.skipTestResultPublishing, false) }}:
           # filter report
