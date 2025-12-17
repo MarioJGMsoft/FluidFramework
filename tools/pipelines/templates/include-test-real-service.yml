@@ -541,9 +541,10 @@ stages:
             ${{ elseif eq(parameters.odspTenantType, 'prod') }}:
               login__microsoft__clientId: $(appClientId)
               login__odsp__test__tenants: $(tenantCreds)
-            # Set environment variable for compatibility mode path (used by start-server-and-test commands)
+            # Set environment variables for compatibility mode (used by start-server-and-test commands)
             ${{ if eq(parameters.enableCompatibilityMode, true) }}:
               PREVIOUS_VERSION_PATH: $(InstallPreviousVersion.previousVersionPath)
+              COMPAT_FLAGS: '--compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
           inputs:
             command: 'custom'
             workingDir: ${{ variables.pipelineHostPath }}/node_modules/${{ parameters.testPackage }}

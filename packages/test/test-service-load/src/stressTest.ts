@@ -78,7 +78,7 @@ export async function stressTest(
 	console.log(`Start time: ${startTime} ms\n`);
 
 	// REMOVE BEFORE MERGE Version Compat console.logs to see what is happpening
-	console.log(`Previous version: (${previousVersionPath})`);
+	console.log(`Previous version path: (${previousVersionPath})`);
 
 	const runnerArgs: string[][] = [];
 	for (let i = 0; i < profile.numClients; i++) {

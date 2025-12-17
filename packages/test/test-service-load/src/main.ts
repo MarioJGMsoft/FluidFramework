@@ -64,7 +64,9 @@ const readRunOptions = () => {
 	const enableMetrics: boolean = commander.enableMetrics ?? false;
 	const createTestId: boolean = commander.createTestId ?? false;
 	const compatibilityMode: boolean = commander.compatibilityMode ?? false;
-	const previousVersionPath: string | undefined = commander.previousVersionPath;
+	// Read from environment variable if not provided via CLI (needed for start-server-and-test scripts)
+	const previousVersionPath: string | undefined =
+		commander.previousVersionPath ?? process.env.PREVIOUS_VERSION_PATH;
 
 	return {
 		driver,
