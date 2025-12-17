@@ -541,14 +541,19 @@ stages:
             ${{ elseif eq(parameters.odspTenantType, 'prod') }}:
               login__microsoft__clientId: $(appClientId)
               login__odsp__test__tenants: $(tenantCreds)
+            # Set environment variable for compatibility mode path (used by start-server-and-test commands)
+            ${{ if eq(parameters.enableCompatibilityMode, true) }}:
+              PREVIOUS_VERSION_PATH: $(InstallPreviousVersion.previousVersionPath)
           inputs:
             command: 'custom'
             workingDir: ${{ variables.pipelineHostPath }}/node_modules/${{ parameters.testPackage }}
             ${{ if eq(parameters.enableCompatibilityMode, true) }}:
+              # For start-server-and-test commands (like start:t9s), pass via env var (set above) not CLI args
+              # For other commands, pass via CLI args as normal
               ${{ if ne(variant.flags, '') }}:
                 customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
               ${{ else }}:
-                customCommand: 'run ${{ parameters.testCommand }} -- --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
+                customCommand: 'run ${{ parameters.testCommand }} -- -- --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
             ${{ else }}:
               ${{ if ne(variant.flags, '') }}:
                 customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
