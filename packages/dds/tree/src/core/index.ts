@@ -105,7 +105,7 @@ export {
 	tryGetChunk,
 	type ChunkedCursor,
 	DetachedFieldIndexFormatVersion,
-	getCodecTreeForDetachedFieldIndexFormat,
+	detachedFieldIndexCodecBuilder,
 } from "./tree/index.js";
 
 export {
@@ -175,6 +175,7 @@ export {
 	type GraphCommit,
 	CommitKind,
 	type CommitMetadata,
+	type ChangeMetadata,
 	type RevisionTag,
 	RevisionTagSchema,
 	RevisionTagCodec,
