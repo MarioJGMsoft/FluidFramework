@@ -552,9 +552,9 @@ stages:
               # For start-server-and-test commands (like start:t9s), pass via env var (set above) not CLI args
               # For other commands, pass via CLI args as normal
               ${{ if ne(variant.flags, '') }}:
-                customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
+                customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
               ${{ else }}:
-                customCommand: 'run ${{ parameters.testCommand }} -- -- --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
+                customCommand: 'run ${{ parameters.testCommand }}'
             ${{ else }}:
               ${{ if ne(variant.flags, '') }}:
                 customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
