@@ -548,7 +548,7 @@ stages:
               ${{ if ne(variant.flags, '') }}:
                 customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }} --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
               ${{ else }}:
-                customCommand: 'run ${{ parameters.testCommand }} --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
+                customCommand: 'run ${{ parameters.testCommand }} -- --compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
             ${{ else }}:
               ${{ if ne(variant.flags, '') }}:
                 customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'

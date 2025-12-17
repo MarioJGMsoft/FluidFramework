@@ -102,6 +102,24 @@ const main = async () => {
 		previousVersionPath,
 	} = readRunOptions();
 
+	// REMOVE BEFORE MERGE - Debug logging for all readRunOptions values
+	console.log("=== ReadRunOptions Debug ===");
+	console.log(`driver: ${driver}`);
+	console.log(`endpoint: ${endpoint}`);
+	console.log(`profileName: ${profileName}`);
+	console.log(`testId: ${testId}`);
+	console.log(`debug: ${debug}`);
+	console.log(`log: ${log}`);
+	console.log(`verbose: ${verbose}`);
+	console.log(`seed: ${seed}`);
+	console.log(`supportsBrowserAuth: ${supportsBrowserAuth}`);
+	console.log(`credFilePath: ${credFilePath}`);
+	console.log(`enableMetrics: ${enableMetrics}`);
+	console.log(`createTestId: ${createTestId}`);
+	console.log(`compatibilityMode: ${compatibilityMode}`);
+	console.log(`previousVersionPath: ${previousVersionPath}`);
+	console.log("============================");
+
 	if (log !== undefined) {
 		process.env.DEBUG = log;
 	}
