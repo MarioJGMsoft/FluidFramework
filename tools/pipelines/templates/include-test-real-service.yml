@@ -374,8 +374,9 @@ stages:
                 #   exit 1
                 # fi
 
-                # Hardcoding the previous version since the test build version that is generated is 0.0.0
-                PREVIOUS_VERSION="2.60.0"
+                # Hardcoding the previous version to 2.70.0 (N-1 for current version 2.80.0)
+                # TODO: In the future, this should be computed dynamically from CURRENT_VERSION
+                PREVIOUS_VERSION="2.70.0"
                 echo "Previous major version: $PREVIOUS_VERSION"
 
                 echo "##vso[task.setvariable variable=currentVersion;isOutput=true]$CURRENT_VERSION"
@@ -408,6 +409,13 @@ stages:
                 ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
                 echo "Contents of dist folder:"
                 ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/dist/"
+
+                # Copy current version into legacy path so old LocalCodeLoader can find it
+                # This is needed because the old runner's LocalCodeLoader will try to load the current test build version
+                echo "Copying current version to legacy path for LocalCodeLoader compatibility..."
+                cp -r "${{ variables.testPackageDir }}" "${LEGACY_PATH}/node_modules/"
+                echo "Current version copied to legacy path successfully"
+                ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
 
                 # Set output variable for the legacy path
                 echo "##vso[task.setvariable variable=previousVersionPath;isOutput=true]${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}"

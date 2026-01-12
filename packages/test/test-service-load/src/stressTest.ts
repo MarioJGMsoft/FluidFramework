@@ -83,8 +83,9 @@ export async function stressTest(
 	const runnerArgs: string[][] = [];
 	for (let i = 0; i < profile.numClients; i++) {
 		const childArgs: string[] = [
-			// Make it so that half the runners use the previous version when mixedVersions is true
-			i > profile.numClients / 2 && compatibilityMode
+			// Make it so that half the runners use the previous version when compatibilityMode is true
+			// Using >= ensures a true 50/50 split (e.g., for 20 clients: 0-9 use current, 10-19 use previous)
+			i >= profile.numClients / 2 && compatibilityMode
 				? `${previousVersionPath}/dist/runner.js`
 				: "./dist/runner.js",
 			"--driver",
