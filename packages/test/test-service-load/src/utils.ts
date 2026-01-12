@@ -45,9 +45,38 @@ const codeDetails: IFluidCodeDetails = {
 	config: {},
 };
 
+/**
+ * Creates a code loader that can handle documents created by different package versions.
+ * This is necessary for compatibility testing where N-1 runners need to load documents
+ * created by the current version (and vice versa).
+ *
+ * @param options - Container runtime options
+ * @param additionalPackageNames - Additional package name strings to register (e.g., from other versions)
+ */
 export const createCodeLoader = (
 	options?: IContainerRuntimeOptions | undefined,
-): LocalCodeLoader => new LocalCodeLoader([[codeDetails, createFluidExport(options)]]);
+	additionalPackageNames?: string[],
+) => {
+	const fluidExport = createFluidExport(options);
+
+	// Always register the current version's code details
+	const codeDetailsEntries: [IFluidCodeDetails, typeof fluidExport][] = [
+		[codeDetails, fluidExport],
+	];
+
+	// Register additional package versions for cross-version compatibility
+	if (additionalPackageNames !== undefined) {
+		for (const pkgNameStr of additionalPackageNames) {
+			const additionalCodeDetails: IFluidCodeDetails = {
+				package: pkgNameStr,
+				config: {},
+			};
+			codeDetailsEntries.push([additionalCodeDetails, fluidExport]);
+		}
+	}
+
+	return new LocalCodeLoader(codeDetailsEntries);
+};
 
 export async function initialize(
 	testDriver: ITestDriver,

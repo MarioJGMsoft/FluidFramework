@@ -126,7 +126,12 @@ parameters:
   type: boolean
   default: false
 
-# Tags for docker environment setup
+# If true, enable compatibility testing where half the clients use the previous major version
+- name: enableCompatibilityMode
+  type: boolean
+  default: false
+
+  # Tags for docker environment setup
 - name: alfredImageTag
   type: string
   default: 'latest'
@@ -340,6 +345,74 @@ stages:
             workingDirectory: ${{ variables.pipelineHostPath }}
             script: 'pnpm install $(Initialize.testPackageTgz)'
 
+        # Mixed-version testing: compute and install previous version
+        - ${{ if eq(parameters.enableCompatibilityMode, true) }}:
+          - task: Bash@3
+            name: ComputePreviousVersion
+            displayName: 'Compute previous major version'
+            inputs:
+              targetType: 'inline'
+              workingDirectory: ${{ variables.pipelineHostPath }}
+              script: |
+                set -eu -o pipefail
+
+                # Get the current version from the installed package
+                CURRENT_VERSION=$(node -e "const pkg = require('${{ variables.testPackageDir }}/package.json'); console.log(pkg.version);")
+                echo "Current version: $CURRENT_VERSION"
+
+                # # Extract major and minor version components
+                # MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
+                # MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
+
+                # # Calculate previous major version (for 2.x series, go back 10 minor versions)
+                # # e.g., 2.73.0 -> 2.60.0, 2.60.0 -> 2.50.0
+                # CURRENT_MAJOR_MINOR=$((MINOR / 10 * 10))
+                # PREVIOUS_MINOR=$((CURRENT_MAJOR_MINOR - 10))
+
+                # if [ $PREVIOUS_MINOR -lt 0 ]; then
+                #   echo "##vso[task.logissue type=error]Cannot compute previous major version for $CURRENT_VERSION"
+                #   exit 1
+                # fi
+
+                # Hardcoding the previous version since the test build version that is generated is 0.0.0
+                PREVIOUS_VERSION="2.60.0"
+                echo "Previous major version: $PREVIOUS_VERSION"
+
+                echo "##vso[task.setvariable variable=currentVersion;isOutput=true]$CURRENT_VERSION"
+                echo "##vso[task.setvariable variable=previousVersion;isOutput=true]$PREVIOUS_VERSION"
+
+          - task: Bash@3
+            name: InstallPreviousVersion
+            displayName: 'Install previous version of test package'
+            retryCountOnTaskFailure: 10
+            inputs:
+              targetType: 'inline'
+              workingDirectory: ${{ variables.pipelineHostPath }}
+              script: |
+                set -eu -o pipefail
+
+                PREVIOUS_VERSION=$(ComputePreviousVersion.previousVersion)
+                LEGACY_PATH="${{ variables.testPackageDir }}/node_modules/.legacy/${PREVIOUS_VERSION}"
+
+                echo "Installing ${{ parameters.testPackage }}@${PREVIOUS_VERSION} at ${LEGACY_PATH}"
+
+                # Create the legacy directory
+                mkdir -p "${LEGACY_PATH}"
+
+                # Install the previous version using npm
+                cd "${LEGACY_PATH}"
+                npm init --yes
+                npm install --no-package-lock "${{ parameters.testPackage }}@${PREVIOUS_VERSION}"
+
+                echo "Previous version installed successfully at ${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
+                ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/"
+                echo "Contents of dist folder:"
+                ls -la "${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}/dist/"
+
+                # Set output variable for the legacy path
+                echo "##vso[task.setvariable variable=previousVersionPath;isOutput=true]${LEGACY_PATH}/node_modules/${{ parameters.testPackage }}"
+
+
         # Download Test Files & Install Extra Dependencies
         # These steps are intended to include extra dependencies that are not available as
         # part of the normal package .tgz installed previously in the pipeline.
@@ -468,10 +541,25 @@ stages:
             ${{ elseif eq(parameters.odspTenantType, 'prod') }}:
               login__microsoft__clientId: $(appClientId)
               login__odsp__test__tenants: $(tenantCreds)
+            # Set environment variables for compatibility mode (used by start-server-and-test commands)
+            ${{ if eq(parameters.enableCompatibilityMode, true) }}:
+              PREVIOUS_VERSION_PATH: $(InstallPreviousVersion.previousVersionPath)
+              COMPAT_FLAGS: '--compatibilityMode --previousVersionPath $(InstallPreviousVersion.previousVersionPath)'
           inputs:
             command: 'custom'
             workingDir: ${{ variables.pipelineHostPath }}/node_modules/${{ parameters.testPackage }}
-            customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
+            ${{ if eq(parameters.enableCompatibilityMode, true) }}:
+              # For start-server-and-test commands (like start:t9s), pass via env var (set above) not CLI args
+              # For other commands, pass via CLI args as normal
+              ${{ if ne(variant.flags, '') }}:
+                customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
+              ${{ else }}:
+                customCommand: 'run ${{ parameters.testCommand }}'
+            ${{ else }}:
+              ${{ if ne(variant.flags, '') }}:
+                customCommand: 'run ${{ parameters.testCommand }} -- ${{ variant.flags }}'
+              ${{ else }}:
+                customCommand: 'run ${{ parameters.testCommand }}'
 
         - ${{ if eq(parameters.skipTestResultPublishing, false) }}:
           # filter report

@@ -42,6 +42,14 @@ const readRunOptions = () => {
 			"Flag indicating whether to create a document corresponding \
         to the testId passed",
 		)
+		.option(
+			"--compatibilityMode",
+			"Enable compatibility testing with previous major version (N-1)",
+		)
+		.option(
+			"--previousVersionPath <path>",
+			"Path where the previous version of the stress test-service-load package is located",
+		)
 		.parse(process.argv);
 
 	const driver: TestDriverTypes = commander.driver;
@@ -56,6 +64,10 @@ const readRunOptions = () => {
 	const credFilePath: string | undefined = commander.credFile;
 	const enableMetrics: boolean = commander.enableMetrics ?? false;
 	const createTestId: boolean = commander.createTestId ?? false;
+	const compatibilityMode: boolean = commander.compatibilityMode ?? false;
+	// Read from environment variable if not provided via CLI (needed for start-server-and-test scripts)
+	const previousVersionPath: string | undefined =
+		commander.previousVersionPath ?? process.env.PREVIOUS_VERSION_PATH;
 
 	return {
 		driver,
@@ -70,6 +82,8 @@ const readRunOptions = () => {
 		credFilePath,
 		enableMetrics,
 		createTestId,
+		compatibilityMode,
+		previousVersionPath,
 	};
 };
 
@@ -87,7 +101,27 @@ const main = async (): Promise<void> => {
 		credFilePath,
 		enableMetrics,
 		createTestId,
+		compatibilityMode,
+		previousVersionPath,
 	} = readRunOptions();
+
+	// REMOVE BEFORE MERGE - Debug logging for all readRunOptions values
+	console.log("=== ReadRunOptions Debug ===");
+	console.log(`driver: ${driver}`);
+	console.log(`endpoint: ${endpoint}`);
+	console.log(`profileName: ${profileName}`);
+	console.log(`testId: ${testId}`);
+	console.log(`debug: ${debug}`);
+	console.log(`log: ${log}`);
+	console.log(`verbose: ${verbose}`);
+	console.log(`seed: ${seed}`);
+	console.log(`supportsBrowserAuth: ${supportsBrowserAuth}`);
+	console.log(`credFilePath: ${credFilePath}`);
+	console.log(`enableMetrics: ${enableMetrics}`);
+	console.log(`createTestId: ${createTestId}`);
+	console.log(`compatibilityMode: ${compatibilityMode}`);
+	console.log(`previousVersionPath: ${previousVersionPath}`);
+	console.log("============================");
 
 	if (log !== undefined) {
 		process.env.DEBUG = log;
@@ -127,6 +161,8 @@ const main = async (): Promise<void> => {
 			profileName,
 			logger,
 			outputDir,
+			compatibilityMode,
+			previousVersionPath,
 		});
 		result = 0;
 	} finally {
