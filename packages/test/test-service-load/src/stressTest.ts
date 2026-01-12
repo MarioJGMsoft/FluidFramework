@@ -13,7 +13,6 @@ import {
 import ps from "ps-node";
 
 import type { TestUsers } from "./getTestUsers.js";
-import { pkgName, pkgVersion } from "./packageVersion.js";
 import type { TestConfiguration } from "./testConfigFile.js";
 import { initialize } from "./utils.js";
 
@@ -82,7 +81,6 @@ export async function stressTest(
 	console.log(`Previous version path: (${previousVersionPath})`);
 
 	const runnerArgs: string[][] = [];
-	const currentPackageName = `${pkgName}@${pkgVersion}`;
 	for (let i = 0; i < profile.numClients; i++) {
 		const childArgs: string[] = [
 			// Make it so that half the runners use the previous version when mixedVersions is true
@@ -115,10 +113,6 @@ export async function stressTest(
 
 		if (testDriver.endpointName !== undefined) {
 			childArgs.push(`--driverEndpoint`, testDriver.endpointName);
-		}
-		// Pass the creator's package name to N-1 runners for cross-version loading
-		if (i > profile.numClients / 2 && compatibilityMode) {
-			childArgs.push("--creatorPackageName", currentPackageName);
 		}
 
 		runnerArgs.push(childArgs);

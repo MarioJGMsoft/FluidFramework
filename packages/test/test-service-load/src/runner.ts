@@ -76,10 +76,6 @@ async function main(): Promise<void> {
 		)
 		.option("-v, --verbose", "Enables verbose logging")
 		.option("-m, --enableOpsMetrics", "Enable capturing ops metrics")
-		.option(
-			"--creatorPackageName <packageName>",
-			"Package name of the version that created the document",
-		)
 		.parse(process.argv);
 
 	const driver: TestDriverTypes = commander.driver;
@@ -92,7 +88,6 @@ async function main(): Promise<void> {
 	const seed: number = commander.seed;
 	const outputDir: string = commander.outputDir;
 	const enableOpsMetrics: boolean = commander.enableOpsMetrics ?? false;
-	const creatorPackageName: string | undefined = commander.creatorPackageName;
 
 	if (log !== undefined) {
 		process.env.DEBUG = log;
@@ -167,7 +162,6 @@ async function main(): Promise<void> {
 			url,
 			seed,
 			enableOpsMetrics,
-			creatorPackageName,
 		);
 		result = 0;
 	} catch (e) {
@@ -233,7 +227,6 @@ async function runnerProcess(
 	url: string,
 	seed: number,
 	enableOpsMetrics: boolean,
-	creatorPackageName: string | undefined,
 ): Promise<void> {
 	// Assigning no-op value due to linter.
 	let metricsCleanup: () => void = () => {};
@@ -291,7 +284,6 @@ async function runnerProcess(
 				documentServiceFactory,
 				codeLoader: createCodeLoader(
 					containerOptions[runConfig.runId % containerOptions.length],
-					creatorPackageName !== undefined ? [creatorPackageName] : undefined,
 				),
 				logger: runConfig.logger,
 				options: runConfig.loaderConfig,
