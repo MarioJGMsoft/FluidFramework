@@ -67,6 +67,78 @@ export const LogLevel = {
 export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];
 
 /**
+ * Extended log levels that include additional internal levels.
+ * This allows for finer-grained logging control without breaking the public API.
+ * @internal
+ */
+export const ExtendedLogLevel = {
+	verbose: 10,
+	default: 20,
+	essential: 25, // Between default and error - for important non-error events
+	error: 30,
+} as const;
+
+/**
+ * Extended log level type that includes internal levels.
+ * @internal
+ */
+export type ExtendedLogLevel = (typeof ExtendedLogLevel)[keyof typeof ExtendedLogLevel];
+
+/**
+ * Normalizes an extended log level to a public LogLevel.
+ * Maps internal levels (like essential:25) to the nearest public level.
+ *
+ * @param level - The extended log level to normalize
+ * @returns The normalized public LogLevel
+ *
+ * @remarks
+ * The normalization strategy maps:
+ * - 10 (verbose) → 10 (verbose)
+ * - 20 (default) → 20 (default)
+ * - 25 (essential) → 20 (default) - rounded down for backward compatibility
+ * - 30 (error) → 30 (error)
+ * @internal
+ */
+export function normalizeLogLevel(level: ExtendedLogLevel): LogLevel {
+	// Map essential (25) to default (20) for systems that don't support the extended level
+	if (level === ExtendedLogLevel.essential) {
+		return LogLevel.default;
+	}
+	// All other levels are already compatible
+	return level as LogLevel;
+}
+
+/**
+ * Checks if the given extended log level should be logged based on the minimum log level.
+ *
+ * @param level - The log level of the event
+ * @param minLevel - The minimum log level threshold
+ * @returns True if the event should be logged, false otherwise
+ *
+ * @remarks
+ * This uses the actual numeric values for comparison, allowing essential (25)
+ * to be correctly filtered between default (20) and error (30).
+ * @internal
+ */
+export function shouldLogAtLevel(
+	level: ExtendedLogLevel,
+	minLevel: LogLevel | ExtendedLogLevel,
+): boolean {
+	return level >= minLevel;
+}
+
+/**
+ * Checks if a given log level is an extended level (not part of the public LogLevel).
+ *
+ * @param level - The log level to check
+ * @returns True if the level is an extended level
+ * @internal
+ */
+export function isExtendedLogLevel(level: ExtendedLogLevel): boolean {
+	return level === ExtendedLogLevel.essential;
+}
+
+/**
  * Interface to output telemetry events.
  * Implemented by hosting app / loader
  * @public

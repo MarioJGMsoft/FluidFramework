@@ -12,6 +12,13 @@ export { JsonStringify, JsonParse } from "./jsonString.js";
 
 export type { JsonTypeToOpaqueJson, OpaqueJsonToJsonType } from "./jsonUtils.js";
 
+export {
+	ExtendedLogLevel,
+	normalizeLogLevel,
+	shouldLogAtLevel,
+	isExtendedLogLevel,
+} from "./logger.js";
+
 // Export set of utility types re-tagged as internal for FF client convenience.
 // These types are not intended for direct use by customers and api-extractor will
 // flag misuse. If an externally visible version of these types is needed, import
