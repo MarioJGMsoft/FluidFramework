@@ -11,7 +11,7 @@ export type { JsonString, JsonStringifyOptions } from "./jsonString.js";
 export { JsonStringify, JsonParse } from "./jsonString.js";
 
 export type { ITelemetryBaseLoggerExt } from "./logger.js";
-export { normalizeLogLevel } from "./logger.js";
+export { normalizeLogLevel, supportsNewLogLevel, isNewLogLevel } from "./logger.js";
 
 export type { JsonTypeToOpaqueJson, OpaqueJsonToJsonType } from "./jsonUtils.js";
 

@@ -13,6 +13,8 @@ import {
 
 import { ChildLogger, createChildLogger, createMultiSinkLogger } from "../logger.js";
 import { MockLogger } from "../mockLogger.js";
+import type { ITelemetryBaseLoggerExt } from "@fluidframework/core-interfaces/internal";
+import { NewLogLevel } from "../../../../common/core-interfaces/lib/logger.js";
 
 describe("ChildLogger", () => {
 	it("Properties & Getters Propagate", () => {
@@ -186,7 +188,7 @@ describe("ChildLogger", () => {
 
 	it("should not send events with log level less than minloglevel", () => {
 		let sent = false;
-		const logger: ITelemetryBaseLogger = {
+		const logger: ITelemetryBaseLoggerExt = {
 			send(event: ITelemetryBaseEvent): void {
 				if (event.eventName !== "testEvent") {
 					throw new Error("unexpected event");
@@ -196,6 +198,9 @@ describe("ChildLogger", () => {
 
 			minLogLevel: LogLevel.error,
 		};
+		if (NewLogLevel.essential >= LogLevel.default) {
+			throw new Error("NewLogLevel values should be above LogLevel values");
+		}
 		const childLogger1 = createChildLogger({ logger });
 
 		childLogger1.send({ category: "error", eventName: "testEvent" }, LogLevel.error);

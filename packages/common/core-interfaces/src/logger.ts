@@ -104,6 +104,40 @@ export function normalizeLogLevel(level: LogLevel | NewLogLevel | undefined): Lo
 }
 
 /**
+ * Type guard to check if a logger supports the extended NewLogLevel values.
+ * Checks for the presence of the `supportsNewLogLevel` marker property.
+ *
+ * @internal
+ */
+export function supportsNewLogLevel(
+	logger: ITelemetryBaseLogger | ITelemetryBaseLoggerExt,
+): logger is ITelemetryBaseLoggerExt {
+	// Check for the marker property that distinguishes ITelemetryBaseLoggerExt
+	return "sendExt" in logger && typeof logger.sendExt === "function";
+}
+
+/**
+ * Type guard to check if a log level value is a NewLogLevel (including essential).
+ *
+ * @internal
+ */
+export function isNewLogLevel(
+	level: LogLevel | NewLogLevel | undefined,
+): level is NewLogLevel {
+	if (level === undefined) {
+		return false;
+	}
+	// Check if it's the essential level (unique to NewLogLevel)
+	if (level === NewLogLevel.essential) {
+		return true;
+	}
+	// Other values (10, 20, 30) exist in both, so we can't definitively say it's NewLogLevel
+	// Return true if it matches any NewLogLevel value
+	const newLogLevelValues = Object.values(NewLogLevel) as number[];
+	return newLogLevelValues.includes(level);
+}
+
+/**
  * Interface to output telemetry events.
  * Implemented by hosting app / loader
  * @public
@@ -130,11 +164,18 @@ export interface ITelemetryBaseLogger {
  */
 export interface ITelemetryBaseLoggerExt {
 	/**
+	 * Log a telemetry event, if it meets the appropriate log-level threshold (see {@link ITelemetryBaseLogger.minLogLevel}).
+	 * @param event - The event to log.
+	 * @param logLevel - The log level of the event. Default: {@link (LogLevel:variable).default}.
+	 */
+	send(event: ITelemetryBaseEvent, logLevel?: LogLevel): void;
+
+	/**
 	 * Log a telemetry event, if it meets the appropriate log-level threshold.
 	 * @param event - The event to log.
 	 * @param logLevel - The log level of the event. Default: {@link (LogLevel:variable).default}.
 	 */
-	send(event: ITelemetryBaseEvent, logLevel?: LogLevel | NewLogLevel): void;
+	sendExt(event: ITelemetryBaseEvent, logLevel?: LogLevel | NewLogLevel): void;
 
 	/**
 	 * Minimum log level to be logged.
