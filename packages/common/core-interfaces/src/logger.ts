@@ -67,75 +67,40 @@ export const LogLevel = {
 export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];
 
 /**
- * Extended log levels that include additional internal levels.
- * This allows for finer-grained logging control without breaking the public API.
+ * Specify levels of the logs.
  * @internal
  */
-export const ExtendedLogLevel = {
-	verbose: 10,
-	default: 20,
-	essential: 25, // Between default and error - for important non-error events
-	error: 30,
+export const NewLogLevel = {
+	verbose: 10, // To log any verbose event for example when you are debugging something.
+	info: 20, // Info events that can be dropped and sampled
+	essential: 25, // To log essential events that are not errors but are important to be logged.
+	error: 30, // To log errors.
 } as const;
 
 /**
- * Extended log level type that includes internal levels.
+ * Specify a level to the log to filter out logs based on the level.
  * @internal
  */
-export type ExtendedLogLevel = (typeof ExtendedLogLevel)[keyof typeof ExtendedLogLevel];
+export type NewLogLevel = (typeof NewLogLevel)[keyof typeof NewLogLevel];
 
 /**
- * Normalizes an extended log level to a public LogLevel.
- * Maps internal levels (like essential:25) to the nearest public level.
+ * Adapter function to normalize NewLogLevel values to LogLevel for backward compatibility.
+ * This allows internal code to use NewLogLevel while maintaining compatibility with existing
+ * code that expects LogLevel.
  *
- * @param level - The extended log level to normalize
- * @returns The normalized public LogLevel
- *
- * @remarks
- * The normalization strategy maps:
- * - 10 (verbose) → 10 (verbose)
- * - 20 (default) → 20 (default)
- * - 25 (essential) → 20 (default) - rounded down for backward compatibility
- * - 30 (error) → 30 (error)
  * @internal
  */
-export function normalizeLogLevel(level: ExtendedLogLevel): LogLevel {
-	// Map essential (25) to default (20) for systems that don't support the extended level
-	if (level === ExtendedLogLevel.essential) {
+export function normalizeLogLevel(level: LogLevel | NewLogLevel | undefined): LogLevel {
+	if (level === undefined) {
 		return LogLevel.default;
 	}
-	// All other levels are already compatible
+	// NewLogLevel.essential (25) maps to LogLevel.default (20)
+	// This ensures essential logs are treated as important but not errors
+	if (level === NewLogLevel.essential) {
+		return LogLevel.default;
+	}
+	// For all other values (10, 20, 30), they exist in both enums
 	return level as LogLevel;
-}
-
-/**
- * Checks if the given extended log level should be logged based on the minimum log level.
- *
- * @param level - The log level of the event
- * @param minLevel - The minimum log level threshold
- * @returns True if the event should be logged, false otherwise
- *
- * @remarks
- * This uses the actual numeric values for comparison, allowing essential (25)
- * to be correctly filtered between default (20) and error (30).
- * @internal
- */
-export function shouldLogAtLevel(
-	level: ExtendedLogLevel,
-	minLevel: LogLevel | ExtendedLogLevel,
-): boolean {
-	return level >= minLevel;
-}
-
-/**
- * Checks if a given log level is an extended level (not part of the public LogLevel).
- *
- * @param level - The log level to check
- * @returns True if the level is an extended level
- * @internal
- */
-export function isExtendedLogLevel(level: ExtendedLogLevel): boolean {
-	return level === ExtendedLogLevel.essential;
 }
 
 /**
@@ -156,6 +121,26 @@ export interface ITelemetryBaseLogger {
 	 * @defaultValue {@link (LogLevel:variable).default}
 	 */
 	minLogLevel?: LogLevel;
+}
+
+/**
+ * Extended interface to output telemetry events with support for NewLogLevel.
+ * For internal use only.
+ * @internal
+ */
+export interface ITelemetryBaseLoggerExt {
+	/**
+	 * Log a telemetry event, if it meets the appropriate log-level threshold.
+	 * @param event - The event to log.
+	 * @param logLevel - The log level of the event. Default: {@link (LogLevel:variable).default}.
+	 */
+	send(event: ITelemetryBaseEvent, logLevel?: LogLevel | NewLogLevel): void;
+
+	/**
+	 * Minimum log level to be logged.
+	 * @defaultValue {@link (LogLevel:variable).default}
+	 */
+	minLogLevel?: LogLevel | NewLogLevel;
 }
 
 /**
