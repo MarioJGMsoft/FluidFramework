@@ -714,7 +714,7 @@ describeCompat("Container", "NoCompat", (getTestObjectProvider) => {
 		"Closing then disposing container should send close and dispose events",
 		[
 			{ eventName: "fluid:telemetry:Container:ContainerClose", category: "error" },
-			{ eventName: "fluid:telemetry:Container:ContainerDispose", category: "generic" },
+			{ eventName: "fluid:telemetry:Container:ContainerDispose", category: "error" },
 		],
 		async () => {
 			const container = await createConnectedContainer();
