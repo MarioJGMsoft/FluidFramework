@@ -95,6 +95,7 @@ import {
 	createChildLogger,
 	createChildMonitoringContext,
 	formatTick,
+	isFluidError,
 	normalizeError,
 	raiseConnectedEvent,
 	wrapError,
@@ -723,14 +724,16 @@ export class Container
 		loadProps?: Pick<IContainerLoadProps, "pendingLocalState">,
 	) {
 		super((name, error) => {
+			const normalizedError = normalizeError(error);
 			this.mc.logger.sendErrorEvent(
 				{
 					eventName: "ContainerEventHandlerException",
 					name: typeof name === "string" ? name : undefined,
 				},
-				error,
+				normalizedError,
 			);
-			this.close(normalizeError(error));
+			normalizedError.addTelemetryProperties({ alreadyLogged: true });
+			this.close(normalizedError);
 		});
 
 		const {
@@ -1053,7 +1056,11 @@ export class Container
 				this.mc.logger.sendTelemetryEvent(
 					{
 						eventName: "ContainerClose",
-						category: error === undefined ? "generic" : "error",
+						category:
+							error === undefined ||
+							(isFluidError(error) && error.getTelemetryProperties().alreadyLogged === true)
+								? "generic"
+								: "error",
 					},
 					error,
 				);
@@ -1101,8 +1108,11 @@ export class Container
 				this.mc.logger.sendTelemetryEvent(
 					{
 						eventName: "ContainerDispose",
-						// Log as error whenever an error is present
-						category: error === undefined ? "generic" : "error",
+						category:
+							error === undefined ||
+							(isFluidError(error) && error.getTelemetryProperties().alreadyLogged === true)
+								? "generic"
+								: "error",
 					},
 					error,
 				);

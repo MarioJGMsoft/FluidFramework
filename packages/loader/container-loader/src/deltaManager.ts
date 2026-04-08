@@ -425,22 +425,29 @@ export class DeltaManager<TConnectionManager extends IConnectionManager>
 		createConnectionManager: (props: IConnectionManagerFactoryArgs) => TConnectionManager,
 	) {
 		super((name, error) => {
+			const normalizedError = normalizeError(error);
 			this.logger.sendErrorEvent(
 				{
 					eventName: "DeltaManagerEventHandlerException",
 					name: typeof name === "string" ? name : undefined,
 				},
-				error,
+				normalizedError,
 			);
-			this.close(normalizeError(error));
+			normalizedError.addTelemetryProperties({ alreadyLogged: true });
+			this.close(normalizedError);
 		});
 		const props: IConnectionManagerFactoryArgs = {
 			incomingOpHandler: (messages: ISequencedDocumentMessage[], reason: string) => {
 				try {
 					this.enqueueMessages(messages, reason);
 				} catch (error) {
-					this.logger.sendErrorEvent({ eventName: "EnqueueMessages_Exception" }, error);
-					this.close(normalizeError(error));
+					const normalizedError = normalizeError(error);
+					this.logger.sendErrorEvent(
+						{ eventName: "EnqueueMessages_Exception" },
+						normalizedError,
+					);
+					normalizedError.addTelemetryProperties({ alreadyLogged: true });
+					this.close(normalizedError);
 				}
 			},
 			signalHandler: (
@@ -1238,8 +1245,10 @@ export class DeltaManager<TConnectionManager extends IConnectionManager>
 				cacheOnly,
 			);
 		} catch (error) {
-			this.logger.sendErrorEvent({ eventName: "GetDeltas_Exception" }, error);
-			this.close(normalizeError(error));
+			const normalizedError = normalizeError(error);
+			this.logger.sendErrorEvent({ eventName: "GetDeltas_Exception" }, normalizedError);
+			normalizedError.addTelemetryProperties({ alreadyLogged: true });
+			this.close(normalizedError);
 		} finally {
 			this.refreshDelayInfo(this.deltaStorageDelayId);
 			this.fetchReason = undefined;
