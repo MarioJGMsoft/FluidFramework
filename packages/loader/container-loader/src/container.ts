@@ -95,7 +95,6 @@ import {
 	createChildLogger,
 	createChildMonitoringContext,
 	formatTick,
-	isFluidError,
 	normalizeError,
 	raiseConnectedEvent,
 	wrapError,
@@ -1056,11 +1055,7 @@ export class Container
 				this.mc.logger.sendTelemetryEvent(
 					{
 						eventName: "ContainerClose",
-						category:
-							error === undefined ||
-							(isFluidError(error) && error.getTelemetryProperties().alreadyLogged === true)
-								? "generic"
-								: "error",
+						category: error === undefined ? "generic" : "error",
 					},
 					error,
 				);
@@ -1108,11 +1103,7 @@ export class Container
 				this.mc.logger.sendTelemetryEvent(
 					{
 						eventName: "ContainerDispose",
-						category:
-							error === undefined ||
-							(isFluidError(error) && error.getTelemetryProperties().alreadyLogged === true)
-								? "generic"
-								: "error",
+						category: !this.closed && error !== undefined ? "error" : "generic",
 					},
 					error,
 				);

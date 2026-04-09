@@ -1425,12 +1425,8 @@ describeCompat("stashed ops", "NoCompat", (getTestObjectProvider, apis) => {
 		"fails when session time expires using stashed time",
 		[
 			{
-				eventName: "fluid:telemetry:Container:ContainerClosed",
+				eventName: "fluid:telemetry:Container:ContainerClose",
 				error: "Client session expired.",
-			},
-			{
-				eventName: "fluid:telemetry:Container:ContainerDisposes",
-				error: "Container was closed while load()",
 			},
 		],
 		async () => {

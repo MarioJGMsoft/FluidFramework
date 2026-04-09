@@ -166,10 +166,6 @@ describeCompat("Flushing ops", "NoCompat", (getTestObjectProvider, apis) => {
 				eventName: "fluid:telemetry:Container:ContainerClose",
 				error: "Offline mode is only supported in turn-based mode",
 			},
-			{
-				eventName: "fluid:telemetry:Container:ContainerDispose",
-				error: "Offline mode is only supported in turn-based mode",
-			},
 		],
 		async () => {
 			await assert.rejects(

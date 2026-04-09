@@ -117,7 +117,7 @@ describe("Container close/dispose telemetry", () => {
 		);
 	});
 
-	it("ContainerDispose is logged as error when dispose is called with an error after close", () => {
+	it("ContainerDispose is logged as generic when dispose is called with an error after close", () => {
 		const mockLogger = new MockLogger();
 		const container = createTestContainer(mockLogger);
 		const testError = new GenericError(
@@ -133,8 +133,8 @@ describe("Container close/dispose telemetry", () => {
 		assert(disposeEvent !== undefined, "ContainerDispose event should be logged");
 		assert.strictEqual(
 			disposeEvent.category,
-			"error",
-			"ContainerDispose should be category 'error' when disposed with an error after close",
+			"generic",
+			"ContainerDispose should be category 'generic' when disposed with an error after close",
 		);
 	});
 
