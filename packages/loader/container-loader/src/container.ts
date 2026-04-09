@@ -723,16 +723,14 @@ export class Container
 		loadProps?: Pick<IContainerLoadProps, "pendingLocalState">,
 	) {
 		super((name, error) => {
-			const normalizedError = normalizeError(error);
 			this.mc.logger.sendErrorEvent(
 				{
 					eventName: "ContainerEventHandlerException",
 					name: typeof name === "string" ? name : undefined,
 				},
-				normalizedError,
+				error,
 			);
-			normalizedError.addTelemetryProperties({ alreadyLogged: true });
-			this.close(normalizedError);
+			this.close(normalizeError(error));
 		});
 
 		const {
