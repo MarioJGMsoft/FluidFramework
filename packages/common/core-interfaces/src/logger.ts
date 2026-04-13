@@ -54,39 +54,51 @@ export interface ITelemetryBaseEvent extends ITelemetryBaseProperties {
  * Specify levels of the logs.
  * @public
  */
-export const LogLevel = {
+export interface LogLevelConst {
 	/**
 	 * Chatty logs useful for debugging.
 	 * @remarks They need not be collected in production.
 	 */
-	verbose: 10,
+	readonly verbose: 10;
 
 	/**
 	 * Information about the session.
 	 * @remarks These logs could be omitted in some sessions if needed (e.g. to reduce overall telemetry volume).
 	 * If any are collected from a particular session, all should be.
 	 */
-	info: 20,
+	readonly info: 20;
 
 	/**
 	 * Essential information about the operation of Fluid.
-	 * @remarks  It is recommended that these should always be collected, even in production, for diagnostic purposes.
+	 * @remarks It is recommended that these should always be collected, even in production, for diagnostic purposes.
 	 * If an event does not have a log level specified, it should be treated as if it were LogLevel.essential.
 	 */
+	readonly essential: 30;
+
+	/**
+	 * @deprecated Use {@link LogLevelConst.info}. If an event does not have a log level specified, it should be treated as if it were LogLevel.essential.
+	 * See {@link https://github.com/microsoft/FluidFramework/issues/26969} for removal timeline.
+	 */
+	readonly default: 20;
+
+	/**
+	 * @deprecated Use {@link LogLevelConst.essential}.
+	 * See {@link https://github.com/microsoft/FluidFramework/issues/26969} for removal timeline.
+	 */
+	readonly error: 30;
+}
+
+/**
+ * {@inheritDoc LogLevelConst}
+ * @public
+ */
+export const LogLevel: LogLevelConst = {
+	verbose: 10,
+	info: 20,
 	essential: 30,
-
-	/**
-	 * @deprecated Use {@link (LogLevel:variable).info}. If an event does not have a log level specified, it should be treated as if it were LogLevel.essential.
-	 * See {@link https://github.com/microsoft/FluidFramework/issues/26969} for removal timeline.
-	 */
-	default: 20, // Default log level
-
-	/**
-	 * @deprecated Use {@link (LogLevel:variable).essential}.
-	 * See {@link https://github.com/microsoft/FluidFramework/issues/26969} for removal timeline.
-	 */
-	error: 30, // To log errors.
-} as const;
+	default: 20,
+	error: 30,
+};
 
 /**
  * Specify a level to the log to filter out logs based on the level.
@@ -103,13 +115,13 @@ export interface ITelemetryBaseLogger {
 	/**
 	 * Log a telemetry event, if it meets the appropriate log-level threshold (see {@link ITelemetryBaseLogger.minLogLevel}).
 	 * @param event - The event to log.
-	 * @param logLevel - The log level of the event. Default: {@link (LogLevel:variable).default}.
+	 * @param logLevel - The log level of the event. Default: {@link LogLevelConst.default}.
 	 */
 	send(event: ITelemetryBaseEvent, logLevel?: LogLevel): void;
 
 	/**
 	 * Minimum log level to be logged.
-	 * @defaultValue {@link (LogLevel:variable).default}
+	 * @defaultValue {@link LogLevelConst.default}
 	 */
 	minLogLevel?: LogLevel;
 }

@@ -326,16 +326,21 @@ export type Listeners<T extends object> = {
 };
 
 // @public
-export const LogLevel: {
-    readonly verbose: 10;
-    readonly info: 20;
-    readonly essential: 30;
-    readonly default: 20;
-    readonly error: 30;
-};
+export const LogLevel: LogLevelConst;
 
 // @public
 export type LogLevel = (typeof LogLevel)[keyof typeof LogLevel];
+
+// @public
+export interface LogLevelConst {
+    // @deprecated (undocumented)
+    readonly default: 20;
+    // @deprecated (undocumented)
+    readonly error: 30;
+    readonly essential: 30;
+    readonly info: 20;
+    readonly verbose: 10;
+}
 
 // @public
 export type Off = () => void;

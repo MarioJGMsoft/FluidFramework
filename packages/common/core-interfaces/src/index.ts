@@ -60,6 +60,7 @@ export type {
 export { IFluidHandleContext, IFluidHandle, fluidHandleSymbol } from "./handles.js";
 
 export type {
+	LogLevelConst,
 	ILoggingError,
 	ITelemetryBaseEvent,
 	ITelemetryBaseLogger,
