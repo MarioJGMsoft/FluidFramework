@@ -52,6 +52,11 @@ export interface ITelemetryBaseEvent extends ITelemetryBaseProperties {
 
 /**
  * Specify levels of the logs.
+ *
+ * @privateRemarks This interface exists solely for documentation. API Extractor does not
+ * propagate TSDoc comments from a const's inline type to API reports, so we define the shape
+ * here and use LogLevelConst on the LogLevel const to surface member docs.
+ *
  * @public
  */
 export interface LogLevelConst {
@@ -76,13 +81,13 @@ export interface LogLevelConst {
 	readonly essential: 30;
 
 	/**
-	 * @deprecated Use {@link LogLevelConst.info}. If an event does not have a log level specified, it should be treated as if it were LogLevel.essential.
+	 * @deprecated Use {@link  (LogLevel:variable) | LogLevel.info}. If an event does not have a log level specified, it should be treated as if it were LogLevel.essential.
 	 * See {@link https://github.com/microsoft/FluidFramework/issues/26969} for removal timeline.
 	 */
 	readonly default: 20;
 
 	/**
-	 * @deprecated Use {@link LogLevelConst.essential}.
+	 * @deprecated Use {@link  (LogLevel:variable) | LogLevel.essential}.
 	 * See {@link https://github.com/microsoft/FluidFramework/issues/26969} for removal timeline.
 	 */
 	readonly error: 30;
@@ -115,13 +120,13 @@ export interface ITelemetryBaseLogger {
 	/**
 	 * Log a telemetry event, if it meets the appropriate log-level threshold (see {@link ITelemetryBaseLogger.minLogLevel}).
 	 * @param event - The event to log.
-	 * @param logLevel - The log level of the event. Default: {@link LogLevelConst.default}.
+	 * @param logLevel - The log level of the event. Default: {@link LogLevelConst.info}.
 	 */
 	send(event: ITelemetryBaseEvent, logLevel?: LogLevel): void;
 
 	/**
 	 * Minimum log level to be logged.
-	 * @defaultValue {@link LogLevelConst.default}
+	 * @defaultValue {@link LogLevelConst.info}
 	 */
 	minLogLevel?: LogLevel;
 }
