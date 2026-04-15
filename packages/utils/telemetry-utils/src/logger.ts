@@ -463,7 +463,7 @@ export class ChildLogger extends TelemetryLogger {
 	}
 
 	private shouldFilterOutEvent(event: ITelemetryBaseEvent, logLevel?: LogLevel): boolean {
-		// The default value for eventLogLevel will be updated to LogLevel.essential in a future PR.
+		// The default value for eventLogLevel will be updated to LogLevel.essential in the future, see work item #68968 for more information.
 		const eventLogLevel = logLevel ?? LogLevel.info;
 		const configLogLevel = this.baseLogger.minLogLevel ?? LogLevel.info;
 		// Filter out in case event log level is below what is wanted in config.
