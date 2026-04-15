@@ -5,7 +5,7 @@
 
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-import { type IFluidHandle, LogLevel } from "@fluidframework/core-interfaces";
+import type { IFluidHandle } from "@fluidframework/core-interfaces";
 import type { IFluidSerializer } from "@fluidframework/shared-object-base/internal";
 import type { ITelemetryLoggerExt } from "@fluidframework/telemetry-utils/internal";
 
@@ -93,15 +93,12 @@ export function serializeAsMinSupportedVersion(
 	let targetChuck: MergeTreeChunkLegacy;
 
 	if (chunk.version !== undefined) {
-		logger.send(
-			{
-				eventName: "MergeTreeChunk:serializeAsMinSupportedVersion",
-				category: "generic",
-				fromChunkVersion: chunk.version,
-				toChunkVersion: undefined,
-			},
-			LogLevel.info,
-		);
+		logger.send({
+			eventName: "MergeTreeChunk:serializeAsMinSupportedVersion",
+			category: "generic",
+			fromChunkVersion: chunk.version,
+			toChunkVersion: undefined,
+		});
 	}
 
 	switch (chunk.version) {

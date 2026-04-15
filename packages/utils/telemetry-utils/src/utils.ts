@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import type { ITelemetryBaseEvent, LogLevel } from "@fluidframework/core-interfaces";
+import type { ITelemetryBaseEvent } from "@fluidframework/core-interfaces";
 
 import { loggerToMonitoringContext } from "./config.js";
 import type { ITelemetryGenericEventExt, ITelemetryLoggerExt } from "./telemetryTypes.js";
@@ -63,7 +63,7 @@ export function createSampledLogger(
 		monitoringContext.config.getBoolean("Fluid.Telemetry.DisableSampling") ?? false;
 
 	const sampledLogger = {
-		send: (event: ITelemetryBaseEvent, logLevel?: LogLevel): void => {
+		send: (event: ITelemetryBaseEvent): void => {
 			// The sampler uses the following logic for sending events:
 			// 1. If isSamplingDisabled is true, then this means events should be unsampled. Therefore we send the event without any checks.
 			// 2. If isSamplingDisabled is false, then event should be sampled using the event sampler, if the sampler is not defined just send all events, other use the eventSampler.sample() method.
@@ -72,7 +72,7 @@ export function createSampledLogger(
 				if (isSamplingDisabled && (skipLoggingWhenSamplingIsDisabled ?? false)) {
 					return;
 				}
-				logger.send(event, logLevel);
+				logger.send(event);
 			}
 		},
 		sendTelemetryEvent: (event: ITelemetryGenericEventExt): void => {

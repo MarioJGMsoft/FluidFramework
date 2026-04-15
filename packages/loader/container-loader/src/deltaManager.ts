@@ -11,11 +11,10 @@ import type {
 	IDeltaSender,
 	ReadOnlyInfo,
 } from "@fluidframework/container-definitions/internal";
-import {
-	type IEventProvider,
-	type ITelemetryBaseEvent,
-	type ITelemetryBaseProperties,
-	LogLevel,
+import type {
+	IEventProvider,
+	ITelemetryBaseEvent,
+	ITelemetryBaseProperties,
 } from "@fluidframework/core-interfaces";
 import { JsonParse } from "@fluidframework/core-interfaces/internal";
 import type { IThrottlingWarning, JsonString } from "@fluidframework/core-interfaces/internal";
@@ -144,7 +143,7 @@ function logIfFalse(
 		typeof event === "string"
 			? { eventName: event, category: "error" }
 			: { category: "error", ...event };
-	logger.send(newEvent, LogLevel.essential);
+	logger.send(newEvent);
 	return false;
 }
 

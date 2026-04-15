@@ -3,11 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import {
-	type ConfigTypes,
-	type IConfigProviderBase,
-	type ITelemetryBaseLogger,
-	LogLevel,
+import type {
+	ConfigTypes,
+	IConfigProviderBase,
+	ITelemetryBaseLogger,
 } from "@fluidframework/core-interfaces";
 import { Lazy } from "@fluidframework/core-utils/internal";
 
@@ -247,17 +246,14 @@ export class CachedConfigProvider implements IConfigProvider {
 				const parsed = stronglyTypedParse(provider?.getRawConfig(name));
 				if (parsed !== undefined) {
 					this.configCache.set(name, parsed);
-					this.logger?.send(
-						{
-							category: "generic",
-							eventName: "ConfigRead",
-							...tagCodeArtifacts({
-								configName: name,
-								configValue: JSON.stringify(parsed),
-							}),
-						},
-						LogLevel.info,
-					);
+					this.logger?.send({
+						category: "generic",
+						eventName: "ConfigRead",
+						...tagCodeArtifacts({
+							configName: name,
+							configValue: JSON.stringify(parsed),
+						}),
+					});
 					return parsed;
 				}
 			}
