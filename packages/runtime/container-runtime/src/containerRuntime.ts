@@ -57,6 +57,7 @@ import type {
 	ITelemetryBaseLogger,
 	Listenable,
 } from "@fluidframework/core-interfaces";
+import { LogLevel } from "@fluidframework/core-interfaces";
 import type {
 	IFluidHandleContext,
 	IFluidHandleInternal,
@@ -2141,11 +2142,14 @@ export class ContainerRuntime
 		this.deltaManager.on("op", () => this.flush());
 
 		// logging hardware telemetry
-		this.baseLogger.send({
-			category: "generic",
-			eventName: "DeviceSpec",
-			...getDeviceSpec(),
-		});
+		this.baseLogger.send(
+			{
+				category: "generic",
+				eventName: "DeviceSpec",
+				...getDeviceSpec(),
+			},
+			LogLevel.info,
+		);
 
 		this.mc.logger.sendTelemetryEvent({
 			eventName: "ContainerLoadStats",
