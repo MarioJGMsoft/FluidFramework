@@ -189,7 +189,7 @@ export abstract class TelemetryLogger implements ITelemetryLoggerExt {
 	public sendTelemetryEvent(
 		event: ITelemetryGenericEventExt,
 		error?: unknown,
-		logLevel: typeof LogLevel.verbose | typeof LogLevel.info = LogLevel.info,
+		logLevel: typeof LogLevel.verbose | typeof LogLevel.essential | typeof LogLevel.info = LogLevel.info,
 	): void {
 		this.sendTelemetryEventCore(
 			{ ...event, category: event.category ?? "generic" },
@@ -256,7 +256,7 @@ export abstract class TelemetryLogger implements ITelemetryLoggerExt {
 	public sendPerformanceEvent(
 		event: ITelemetryPerformanceEventExt,
 		error?: unknown,
-		logLevel: typeof LogLevel.verbose | typeof LogLevel.info = LogLevel.info,
+		logLevel: typeof LogLevel.verbose | typeof LogLevel.essential | typeof LogLevel.info = LogLevel.info,
 	): void {
 		const perfEvent = {
 			...event,
@@ -464,7 +464,7 @@ export class ChildLogger extends TelemetryLogger {
 
 	private shouldFilterOutEvent(event: ITelemetryBaseEvent, logLevel?: LogLevel): boolean {
 		// The default value for eventLogLevel will be updated to {@link @fluidframework/core-interfaces#LogLevel.essential} once issue #26910 is resolved.
-		const eventLogLevel = logLevel ?? LogLevel.info;
+		const eventLogLevel = logLevel ?? LogLevel.essential;
 		const configLogLevel = this.baseLogger.minLogLevel ?? LogLevel.info;
 		// Filter out in case event log level is below what is wanted in config.
 		return eventLogLevel < configLogLevel;
