@@ -230,7 +230,7 @@ export abstract class TelemetryLogger implements TelemetryLoggerExt {
 	public sendTelemetryEvent(
 		event: ITelemetryGenericEventExt,
 		error?: unknown,
-		logLevel: typeof LogLevel.verbose | typeof LogLevel.info = LogLevel.info,
+		logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	): void {
 		this.sendTelemetryEventCore(
 			{ ...event, category: event.category ?? "generic" },
@@ -295,7 +295,7 @@ export abstract class TelemetryLogger implements TelemetryLoggerExt {
 	public sendPerformanceEvent(
 		event: ITelemetryPerformanceEventExt,
 		error?: unknown,
-		logLevel: typeof LogLevel.verbose | typeof LogLevel.info = LogLevel.info,
+		logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	): void {
 		const perfEvent = {
 			...event,
@@ -534,7 +534,8 @@ export class ChildLogger extends TelemetryLogger {
 		if (this.shouldFilterOutEvent(event, logLevel)) {
 			return;
 		}
-		this.baseLogger.send(this.prepareEvent(event), logLevel);
+		// If no log level was provided, default to essential
+		this.baseLogger.send(this.prepareEvent(event), logLevel ?? LogLevel.essential);
 	}
 }
 
