@@ -143,7 +143,7 @@ export interface ITelemetryLoggerExt extends ITelemetryBaseLogger {
 	sendTelemetryEvent(
 		event: ITelemetryGenericEventExt,
 		error?: unknown,
-		logLevel?: typeof LogLevel.verbose | typeof LogLevel.default,
+		logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	): void;
 
 	/**
@@ -166,7 +166,7 @@ export interface ITelemetryLoggerExt extends ITelemetryBaseLogger {
 	sendPerformanceEvent(
 		event: ITelemetryPerformanceEventExt,
 		error?: unknown,
-		logLevel?: typeof LogLevel.verbose | typeof LogLevel.default,
+		logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	): void;
 }
 
@@ -183,12 +183,12 @@ export interface TelemetryLoggerExt extends ITelemetryBaseLogger {
 	 * Send an information telemetry event.
 	 * @param event - Event to send.
 	 * @param error - Optional error object to log.
-	 * @param logLevel - Optional level of the log. Default: {@link @fluidframework/core-interfaces#LogLevel.default}.
+	 * @param logLevel - Optional level of the log. Default: {@link @fluidframework/core-interfaces#LogLevelConst.info | LogLevel.info}.
 	 */
 	sendTelemetryEvent(
 		event: ITelemetryGenericEventExt,
 		error?: unknown,
-		logLevel?: typeof LogLevel.verbose | typeof LogLevel.default,
+		logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	): void;
 
 	/**
@@ -202,11 +202,11 @@ export interface TelemetryLoggerExt extends ITelemetryBaseLogger {
 	 * Send a performance telemetry event.
 	 * @param event - Event to send
 	 * @param error - Optional error object to log.
-	 * @param logLevel - Optional level of the log. Default: {@link @fluidframework/core-interfaces#LogLevelConst.default | LogLevel.default}.
+	 * @param logLevel - Optional level of the log. Default: {@link @fluidframework/core-interfaces#LogLevelConst.info | LogLevel.info}.
 	 */
 	sendPerformanceEvent(
 		event: ITelemetryPerformanceEventExt,
 		error?: unknown,
-		logLevel?: typeof LogLevel.verbose | typeof LogLevel.default,
+		logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	): void;
 }

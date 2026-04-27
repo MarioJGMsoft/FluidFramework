@@ -66,14 +66,14 @@ describe("MultiSinkLogger", () => {
 	});
 
 	it("MultiSink logger set the logLevel to min logLevel of all loggers", () => {
-		const logger1 = new MockLogger(LogLevel.error);
-		const logger2 = new MockLogger(LogLevel.default);
+		const logger1 = new MockLogger(LogLevel.essential);
+		const logger2 = new MockLogger(LogLevel.info);
 		const multiSink = createMultiSinkLogger({
 			loggers: [createChildLogger({ logger: logger1 }), logger2],
 		});
 		assert.strictEqual(
 			multiSink.minLogLevel,
-			LogLevel.default,
+			LogLevel.info,
 			"Min loglevel should be set correctly",
 		);
 
@@ -94,7 +94,7 @@ describe("MultiSinkLogger", () => {
 		});
 		assert.strictEqual(
 			multiSink.minLogLevel,
-			LogLevel.default,
+			LogLevel.info,
 			"Min loglevel should be set correctly to default",
 		);
 	});
@@ -107,14 +107,14 @@ describe("MultiSinkLogger", () => {
 		(multiSink as MultiSinkLogger).addLogger(new MockLogger());
 		assert.strictEqual(
 			multiSink.minLogLevel,
-			LogLevel.default,
+			LogLevel.info,
 			"Min loglevel should be set correctly to default",
 		);
 
-		(multiSink as MultiSinkLogger).addLogger(new MockLogger(LogLevel.default));
+		(multiSink as MultiSinkLogger).addLogger(new MockLogger(LogLevel.info));
 		assert.strictEqual(
 			multiSink.minLogLevel,
-			LogLevel.default,
+			LogLevel.info,
 			"Min loglevel should be set correctly to default",
 		);
 
