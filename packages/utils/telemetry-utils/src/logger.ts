@@ -762,6 +762,7 @@ export class PerformanceEvent {
 	 * @param sampleThreshold - events with the same name and category will be sent to the logger
 	 * only when we hit this many executions of the task. If unspecified, all events will be sent.
 	 * @param logLevel - optional {@link LogLevel} for events emitted by this performance event.
+	 * If unspecified, the default log level will be used.
 	 * @returns The results of the executed task
 	 *
 	 * @remarks Note that if the "same" event (category + eventName) would be emitted by different
