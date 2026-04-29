@@ -695,6 +695,7 @@ export class PerformanceEvent {
 	 * @param emitLogs - should this instance emit logs. If set to false, logs will not be emitted to the logger,
 	 * but measurements will still be performed and any specified markers will be generated.
 	 * @param logLevel - optional {@link LogLevel} for events emitted by this performance event.
+	 * If unspecified, {@link @fluidframework/core-interfaces#LogLevelConst.default | LogLevel.default} will be used.
 	 * @returns An instance of {@link PerformanceEvent}
 	 */
 	public static start(
@@ -702,7 +703,7 @@ export class PerformanceEvent {
 		event: ITelemetryGenericEventExt,
 		markers?: IPerformanceEventMarkers,
 		emitLogs: boolean = true,
-		logLevel?: typeof LogLevel.verbose | typeof LogLevel.default,
+		logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	): PerformanceEvent {
 		return new PerformanceEvent(
 			extractTelemetryLoggerExt(logger),
@@ -722,6 +723,7 @@ export class PerformanceEvent {
 	 * @param sampleThreshold - events with the same name and category will be sent to the logger
 	 * only when we hit this many executions of the task. If unspecified, all events will be sent.
 	 * @param logLevel - optional {@link LogLevel} for events emitted by this performance event.
+	 * If unspecified, {@link @fluidframework/core-interfaces#LogLevelConst.info | LogLevel.info} will be used.
 	 * @returns The results of the executed task
 	 *
 	 * @remarks Note that if the "same" event (category + eventName) would be emitted by different
@@ -735,7 +737,7 @@ export class PerformanceEvent {
 		callback: (event: PerformanceEvent) => T,
 		markers?: IPerformanceEventMarkers,
 		sampleThreshold: number = 1,
-		logLevel?: typeof LogLevel.verbose | typeof LogLevel.default,
+		logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	): T {
 		const perfEvent = PerformanceEvent.start(
 			logger,
@@ -764,6 +766,7 @@ export class PerformanceEvent {
 	 * @param sampleThreshold - events with the same name and category will be sent to the logger
 	 * only when we hit this many executions of the task. If unspecified, all events will be sent.
 	 * @param logLevel - optional {@link LogLevel} for events emitted by this performance event.
+	 * If unspecified, {@link @fluidframework/core-interfaces#LogLevelConst.default | LogLevel.default} will be used.
 	 * @returns The results of the executed task
 	 *
 	 * @remarks Note that if the "same" event (category + eventName) would be emitted by different
@@ -777,7 +780,7 @@ export class PerformanceEvent {
 		callback: (event: PerformanceEvent) => Promise<T>,
 		markers?: IPerformanceEventMarkers,
 		sampleThreshold: number = 1,
-		logLevel?: typeof LogLevel.verbose | typeof LogLevel.default,
+		logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	): Promise<T> {
 		const perfEvent = PerformanceEvent.start(
 			logger,
@@ -809,7 +812,7 @@ export class PerformanceEvent {
 		event: ITelemetryGenericEventExt,
 		private readonly markers: IPerformanceEventMarkers = { end: true, cancel: "generic" },
 		private readonly emitLogs: boolean = true,
-		private readonly logLevel?: typeof LogLevel.verbose | typeof LogLevel.default,
+		private readonly logLevel?: typeof LogLevel.verbose | typeof LogLevel.info,
 	) {
 		this.event = { ...event };
 		if (this.markers.start) {
