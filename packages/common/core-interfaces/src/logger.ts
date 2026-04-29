@@ -81,14 +81,14 @@ export interface LogLevelConst {
 
 	/**
 	 * Default LogLevel
-	 * @deprecated Prefer {@link LogLevelConst.info | LogLevel.info} when selecting a level explicitly to preserve prior treatment.
+	 * @deprecated 2.101.0. Removed in 3.0.0. Prefer {@link LogLevelConst.info | LogLevel.info} when selecting a level explicitly to preserve prior treatment.
 	 * @see {@link https://github.com/microsoft/FluidFramework/issues/26969 | Issue #26969} for removal tracking.
 	 */
 	readonly default: 20;
 
 	/**
 	 * To log errors.
-	 * @deprecated Prefer {@link LogLevelConst.essential | LogLevel.essential} when selecting a level.
+	 * @deprecated 2.101.0. Removed in 3.0.0. Prefer {@link LogLevelConst.essential | LogLevel.essential} when selecting a level.
 	 * @see {@link https://github.com/microsoft/FluidFramework/issues/26969 | Issue #26969} for removal tracking.
 	 */
 	readonly error: 30;
