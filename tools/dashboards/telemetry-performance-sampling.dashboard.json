@@ -1,0 +1,249 @@
+{
+	"id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+	"eTag": "f0e1d2c3-b4a5-6789-0123-456789abcdef",
+	"title": "Telemetry Performance — Sampling Impact (PR #27126)",
+	"schema": "ADX Dashboard 1.0",
+	"dataSources": [
+		{
+			"id": "ds-outlook-web",
+			"name": "Outlook Web (Bohemia)",
+			"clusterUri": "https://kusto.aria.microsoft.com",
+			"database": "Outlook Web",
+			"kind": "kusto-data-source"
+		}
+	],
+	"parameters": [
+		{
+			"kind": "duration",
+			"id": "param-time-range",
+			"displayName": "Time range",
+			"description": "Controls the time window shown across all tiles. Defaults to the last 30 days to capture the full rollout of PR #27126.",
+			"defaultValue": {
+				"kind": "last",
+				"amount": 30,
+				"unit": "days"
+			},
+			"beginVariableName": "_startTime",
+			"endVariableName": "_endTime"
+		},
+		{
+			"kind": "datetime",
+			"id": "param-deploy-date",
+			"displayName": "PR #27126 Deploy Date",
+			"description": "The date PR #27126 (telemetry sampling) was deployed to Bohemia/Outlook Web Production. Used by the Before/After comparison tile. Update this value after confirming the deployment date.",
+			"defaultValue": {
+				"kind": "datetime",
+				"value": "2025-04-01T00:00:00"
+			},
+			"variableName": "_prDeployDate"
+		}
+	],
+	"tiles": [
+		{
+			"id": "tile-overview-timechart",
+			"title": "📊 All Sampled Events — Volume Over Time (by Event)",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "// Overview: each tracked event as its own series. Decreasing lines indicate sampling is taking effect.\n// Note: the sampledEvents list below is intentionally repeated in each tile query because ADX dashboards\n// do not support shared let-clauses across tiles. To add/remove events, update all tiles together.\nlet sampledEvents = dynamic([\n    \"fluid:telemetry:BlobManager:AttachmentBlobsLoaded\",\n    \"fluid:telemetry:CodeLoad_end\",\n    \"fluid:telemetry:ConfigRead\",\n    \"fluid:telemetry:Container:noWaitOnDisconnected\",\n    \"fluid:telemetry:ContainerRuntime:ConfigRead\",\n    \"fluid:telemetry:DeviceSpec\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsEventCallbacks\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsOpProcessing\",\n    \"fluid:telemetry:OdspDriver:CacheOpsRetrieved\",\n    \"fluid:telemetry:OdspDriver:GetDeltas_end\",\n    \"fluid:telemetry:OpPerf:ConnectionSpeed\"\n]);\nclient_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| extend eventName = tostring(data.eventName)\n| where eventName in (sampledEvents)\n| summarize EventCount = count() by bin(EventInfo_Time, 1d), eventName\n| render timechart with (title=\"Events logged per day — split by event name\")"
+			},
+			"layout": { "x": 0, "y": 0, "width": 12, "height": 5 },
+			"visualType": "timechart",
+			"visualOptions": {
+				"hideLegend": false,
+				"xColumn": { "name": "EventInfo_Time", "type": "datetime" },
+				"yColumns": [{ "name": "EventCount", "type": "long" }],
+				"seriesColumns": [{ "name": "eventName", "type": "string" }]
+			}
+		},
+		{
+			"id": "tile-total-volume",
+			"title": "📉 Total Sampled Event Volume — All Events Combined",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "// Total volume across all 11 events. A downward trend confirms that PR #27126 sampling is reducing telemetry noise.\nlet sampledEvents = dynamic([\n    \"fluid:telemetry:BlobManager:AttachmentBlobsLoaded\",\n    \"fluid:telemetry:CodeLoad_end\",\n    \"fluid:telemetry:ConfigRead\",\n    \"fluid:telemetry:Container:noWaitOnDisconnected\",\n    \"fluid:telemetry:ContainerRuntime:ConfigRead\",\n    \"fluid:telemetry:DeviceSpec\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsEventCallbacks\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsOpProcessing\",\n    \"fluid:telemetry:OdspDriver:CacheOpsRetrieved\",\n    \"fluid:telemetry:OdspDriver:GetDeltas_end\",\n    \"fluid:telemetry:OpPerf:ConnectionSpeed\"\n]);\nclient_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| extend eventName = tostring(data.eventName)\n| where eventName in (sampledEvents)\n| summarize TotalCount = count() by bin(EventInfo_Time, 1d)\n| render timechart with (title=\"Total events logged per day (all 11 events)\")"
+			},
+			"layout": { "x": 0, "y": 5, "width": 6, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": {
+				"hideLegend": true,
+				"xColumn": { "name": "EventInfo_Time", "type": "datetime" },
+				"yColumns": [{ "name": "TotalCount", "type": "long" }]
+			}
+		},
+		{
+			"id": "tile-sampling-effectiveness",
+			"title": "🔬 Sampling Effectiveness — Logged Events vs. Actual Operations",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "// The 'count' field in each sampled event tells how many real operations were batched into one log entry.\n// AvgSamplingRatio > 1 means sampling is active. Higher = more aggressive sampling.\nlet sampledEvents = dynamic([\n    \"fluid:telemetry:BlobManager:AttachmentBlobsLoaded\",\n    \"fluid:telemetry:CodeLoad_end\",\n    \"fluid:telemetry:ConfigRead\",\n    \"fluid:telemetry:Container:noWaitOnDisconnected\",\n    \"fluid:telemetry:ContainerRuntime:ConfigRead\",\n    \"fluid:telemetry:DeviceSpec\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsEventCallbacks\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsOpProcessing\",\n    \"fluid:telemetry:OdspDriver:CacheOpsRetrieved\",\n    \"fluid:telemetry:OdspDriver:GetDeltas_end\",\n    \"fluid:telemetry:OpPerf:ConnectionSpeed\"\n]);\nclient_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| extend eventName = tostring(data.eventName)\n| where eventName in (sampledEvents)\n| extend sampledCount = toint(coalesce(data.count, data.Count, 1))\n| summarize\n    EventsLogged     = count(),\n    TotalOperations  = sum(sampledCount),\n    AvgSamplingRatio = round(avg(sampledCount), 1)\n  by eventName\n| sort by AvgSamplingRatio desc\n| project\n    [\"Event Name\"] = eventName,\n    [\"Events Logged\"] = EventsLogged,\n    [\"Total Operations\"] = TotalOperations,\n    [\"Avg Sampling Ratio\"] = AvgSamplingRatio"
+			},
+			"layout": { "x": 6, "y": 5, "width": 6, "height": 4 },
+			"visualType": "table",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-before-after",
+			"title": "📋 Before / After PR #27126 — Event Count Comparison (±7 days)",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "// Compares the 7-day window before vs. after PR #27126 deployment.\n// Set the 'PR #27126 Deploy Date' dashboard parameter to the actual date the change reached Bohemia/Production.\nlet sampledEvents = dynamic([\n    \"fluid:telemetry:BlobManager:AttachmentBlobsLoaded\",\n    \"fluid:telemetry:CodeLoad_end\",\n    \"fluid:telemetry:ConfigRead\",\n    \"fluid:telemetry:Container:noWaitOnDisconnected\",\n    \"fluid:telemetry:ContainerRuntime:ConfigRead\",\n    \"fluid:telemetry:DeviceSpec\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsEventCallbacks\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsOpProcessing\",\n    \"fluid:telemetry:OdspDriver:CacheOpsRetrieved\",\n    \"fluid:telemetry:OdspDriver:GetDeltas_end\",\n    \"fluid:telemetry:OpPerf:ConnectionSpeed\"\n]);\nlet beforeWindow = client_event\n    | where EventInfo_Time between ((_prDeployDate - 7d) .. _prDeployDate)\n    | where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n    | extend data = parse_json(MiscData)\n    | extend eventName = tostring(data.eventName)\n    | where eventName in (sampledEvents)\n    | summarize CountBefore = count() by eventName;\nlet afterWindow = client_event\n    | where EventInfo_Time between (_prDeployDate .. (_prDeployDate + 7d))\n    | where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n    | extend data = parse_json(MiscData)\n    | extend eventName = tostring(data.eventName)\n    | where eventName in (sampledEvents)\n    | summarize CountAfter = count() by eventName;\nbeforeWindow\n| join kind=fullouter afterWindow on eventName\n| project\n    [\"Event Name\"]     = coalesce(eventName, eventName1),\n    [\"Before (7d)\"]   = coalesce(CountBefore, 0),\n    [\"After (7d)\"]    = coalesce(CountAfter, 0),\n    [\"Change %\"]      = round((todouble(coalesce(CountAfter, 0)) - todouble(coalesce(CountBefore, 0)))\n                              / todouble(max_of(coalesce(CountBefore, 1), 1)) * 100, 1)\n| sort by [\"Change %\"] asc"
+			},
+			"layout": { "x": 0, "y": 9, "width": 12, "height": 5 },
+			"visualType": "table",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-AttachmentBlobsLoaded",
+			"title": "BlobManager:AttachmentBlobsLoaded",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:BlobManager:AttachmentBlobsLoaded\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 0, "y": 14, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-CodeLoad",
+			"title": "CodeLoad_end",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:CodeLoad_end\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 4, "y": 14, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-ConfigRead",
+			"title": "ConfigRead",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:ConfigRead\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 8, "y": 14, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-noWaitOnDisconnected",
+			"title": "Container:noWaitOnDisconnected",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:Container:noWaitOnDisconnected\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 0, "y": 18, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-ContainerRuntimeConfigRead",
+			"title": "ContainerRuntime:ConfigRead",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:ContainerRuntime:ConfigRead\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 4, "y": 18, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-DeviceSpec",
+			"title": "DeviceSpec",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:DeviceSpec\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 8, "y": 18, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-ddsEventCallbacks",
+			"title": "FluidDataStoreRuntime:ddsEventCallbacks",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:FluidDataStoreRuntime:ddsEventCallbacks\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 0, "y": 22, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-ddsOpProcessing",
+			"title": "FluidDataStoreRuntime:ddsOpProcessing",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:FluidDataStoreRuntime:ddsOpProcessing\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 4, "y": 22, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-CacheOpsRetrieved",
+			"title": "OdspDriver:CacheOpsRetrieved",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:OdspDriver:CacheOpsRetrieved\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 8, "y": 22, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-GetDeltas",
+			"title": "OdspDriver:GetDeltas_end",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:OdspDriver:GetDeltas_end\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 0, "y": 26, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-event-ConnectionSpeed",
+			"title": "OpPerf:ConnectionSpeed",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "client_event\n| where EventInfo_Time between (_startTime .. _endTime)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| where tostring(data.eventName) == \"fluid:telemetry:OpPerf:ConnectionSpeed\"\n| summarize EventCount = count() by bin(EventInfo_Time, 1d)\n| render timechart"
+			},
+			"layout": { "x": 4, "y": 26, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": { "hideLegend": true }
+		},
+		{
+			"id": "tile-hourly-detail",
+			"title": "🔍 Hourly Breakdown — All Sampled Events (last 7 days)",
+			"query": {
+				"kind": "inline",
+				"dataSourceId": "ds-outlook-web",
+				"text": "// Finer-grained hourly view to see intraday patterns or abrupt drops after a deployment.\nlet sampledEvents = dynamic([\n    \"fluid:telemetry:BlobManager:AttachmentBlobsLoaded\",\n    \"fluid:telemetry:CodeLoad_end\",\n    \"fluid:telemetry:ConfigRead\",\n    \"fluid:telemetry:Container:noWaitOnDisconnected\",\n    \"fluid:telemetry:ContainerRuntime:ConfigRead\",\n    \"fluid:telemetry:DeviceSpec\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsEventCallbacks\",\n    \"fluid:telemetry:FluidDataStoreRuntime:ddsOpProcessing\",\n    \"fluid:telemetry:OdspDriver:CacheOpsRetrieved\",\n    \"fluid:telemetry:OdspDriver:GetDeltas_end\",\n    \"fluid:telemetry:OpPerf:ConnectionSpeed\"\n]);\nclient_event\n| where EventInfo_Time > ago(7d)\n| where EventName in (\"BohemiaLogger_Perf\", \"BohemiaLogger_Event\")\n| extend data = parse_json(MiscData)\n| extend eventName = tostring(data.eventName)\n| where eventName in (sampledEvents)\n| summarize EventCount = count() by bin(EventInfo_Time, 1h), eventName\n| render timechart with (title=\"Hourly event count — last 7 days\")"
+			},
+			"layout": { "x": 8, "y": 26, "width": 4, "height": 4 },
+			"visualType": "timechart",
+			"visualOptions": {
+				"hideLegend": false,
+				"xColumn": { "name": "EventInfo_Time", "type": "datetime" },
+				"yColumns": [{ "name": "EventCount", "type": "long" }],
+				"seriesColumns": [{ "name": "eventName", "type": "string" }]
+			}
+		}
+	]
+}
