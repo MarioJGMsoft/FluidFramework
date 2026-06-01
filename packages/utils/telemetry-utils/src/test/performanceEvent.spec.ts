@@ -160,7 +160,7 @@ describe("PerformanceEvent", () => {
 			assert.equal(logger.events[0]?.category, "generic");
 		});
 
-		it("Preserves scalar LogLevel.info behavior when marker escalation is not configured", () => {
+		it("Preserves LogLevel.info behavior when marker escalation is not configured", () => {
 			const perfEvent = PerformanceEvent.start(
 				logger,
 				{ eventName: "InfoCancel" },
