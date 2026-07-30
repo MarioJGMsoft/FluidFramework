@@ -120,6 +120,15 @@ parameters:
   type: boolean
   default: false
 
+# Indicates who owns the publish step for this build:
+#   true  - publishing happens as part of this build pipeline's own publish stages (current behavior).
+#   false - publishing is delegated to the dedicated publish pipeline, which consumes the packed tarballs
+#           and publish-metadata.json produced here.
+# This is recorded in publish-metadata.json so the publish pipeline can tell which runs it owns.
+- name: publishAsPartOfBuild
+  type: boolean
+  default: true
+
 # Indicates if tests should be run with code coverage analysis.
 - name: testCoverage
   type: boolean
@@ -427,6 +436,7 @@ extends:
                       RELEASE: $(release)
                       PUBLISH_OVERRIDE: '${{ parameters.publishOverride }}'
                       IS_LATEST: $(SetVersion.isLatest)
+                      PUBLISH_AS_PART_OF_BUILD: '${{ parameters.publishAsPartOfBuild }}'
                     inputs:
                       targetType: 'inline'
                       workingDirectory: $(Build.ArtifactStagingDirectory)/pack
@@ -464,18 +474,31 @@ extends:
                             ;;
                         esac
 
+                        # Unlike the other fields there is no safe fallback here: guessing wrong either
+                        # double-publishes or drops the release entirely, so require an explicit boolean.
+                        case "${PUBLISH_AS_PART_OF_BUILD:-}" in
+                          false|False) publishAsPartOfBuild=false ;;
+                          true|True) publishAsPartOfBuild=true ;;
+                          *)
+                            echo "##vso[task.logissue type=error]Invalid publishAsPartOfBuild value '${PUBLISH_AS_PART_OF_BUILD:-}'"
+                            exit 1
+                            ;;
+                        esac
+
                         jq -n \
                           --argjson schemaVersion 1 \
                           --arg version "$VERSION" \
                           --arg release "$release" \
                           --arg publishOverride "$PUBLISH_OVERRIDE" \
                           --argjson isLatest "$isLatest" \
+                          --argjson publishAsPartOfBuild "$publishAsPartOfBuild" \
                           '{
                             schemaVersion: $schemaVersion,
                             version: $version,
                             release: $release,
                             publishOverride: $publishOverride,
-                            isLatest: $isLatest
+                            isLatest: $isLatest,
+                            publishAsPartOfBuild: $publishAsPartOfBuild
                           }' > publish-metadata.json
 
                         echo "Generated publish-metadata.json:"
